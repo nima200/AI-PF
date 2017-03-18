@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b8e5fe6bc1a3fbd4fb4a0cb3b74e281d
-timeCreated: 1489869711
+guid: e1848144a85b9aa4e89afbc117c871a5
+timeCreated: 1489870555
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -18,8 +18,14 @@ ModelImporter:
     100020: Box012
     100022: Box013
     100024: Box014
-    100026: //RootNode
-    100028: Level
+    100026: Box015
+    100028: Box016
+    100030: Box017
+    100032: Box018
+    100034: Box019
+    100036: Box020
+    100038: //RootNode
+    100040: Level
     400000: Box002
     400002: Box003
     400004: Box004
@@ -33,8 +39,14 @@ ModelImporter:
     400020: Box012
     400022: Box013
     400024: Box014
-    400026: //RootNode
-    400028: Level
+    400026: Box015
+    400028: Box016
+    400030: Box017
+    400032: Box018
+    400034: Box019
+    400036: Box020
+    400038: //RootNode
+    400040: Level
     2300000: Box002
     2300002: Box003
     2300004: Box004
@@ -48,7 +60,13 @@ ModelImporter:
     2300020: Box012
     2300022: Box013
     2300024: Box014
-    2300026: Level
+    2300026: Box015
+    2300028: Box016
+    2300030: Box017
+    2300032: Box018
+    2300034: Box019
+    2300036: Box020
+    2300038: Level
     3300000: Box002
     3300002: Box003
     3300004: Box004
@@ -62,7 +80,13 @@ ModelImporter:
     3300020: Box012
     3300022: Box013
     3300024: Box014
-    3300026: Level
+    3300026: Box015
+    3300028: Box016
+    3300030: Box017
+    3300032: Box018
+    3300034: Box019
+    3300036: Box020
+    3300038: Level
     4300000: Level
     4300002: Box002
     4300004: Box003
@@ -77,6 +101,12 @@ ModelImporter:
     4300022: Box012
     4300024: Box013
     4300026: Box014
+    4300028: Box015
+    4300030: Box016
+    4300032: Box017
+    4300034: Box018
+    4300036: Box019
+    4300038: Box020
     9500000: //RootNode
   materials:
     importMaterials: 1
