@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class Student : MonoBehaviour
 {
@@ -15,37 +18,36 @@ public class Student : MonoBehaviour
         get { return _myState; }
         set
         {
-            // If state is set to idle then we can hangout for a few seconds 
-            if (value == StudentState.Idle)
+            switch (value)
             {
-                _myState = value;
-//                print("Going to idle");
-                StartCoroutine(Chill());
-            }
-            else
-            {
-                /* If not, half the time, we check if previous state was not idle (so we don't go idle -> idle)
-                 * Then the state goes to 
-                 */
-
-                int probability = Random.Range(0, 10);
-                if (probability < 5 && _myState != StudentState.Idle)
-                {
-                    MyState = StudentState.Idle;
-                }
-                else if (value == StudentState.SearchingForProf)
-                {
-//                    print("Going to " + value);
+                case StudentState.Idle:
                     _myState = value;
-                    // keep going
-                    StartCoroutine(NextProfessor.ReceiveAdvice(this));
-                }
-                else
-                {
+                    StartCoroutine(Chill());
+                    break;
+                case StudentState.GettingAdvice:
                     _myState = value;
-                }
+                    break;
+                case StudentState.SearchingForProf:
+                    int probability = Random.Range(0, 10);
+                    if (probability < 5 && _myState != StudentState.Idle)
+                    {
+                        MyState = StudentState.Idle;
+                    }
+                    else
+                    {
+                        _myState = value;
+                        StartCoroutine(NextProfessor.ReceiveAdvice(this));
+                    }
+                    break;
             }
         }
+    }
+
+    public IEnumerator Chill()
+    {
+        yield return new WaitForSecondsRealtime(3f);
+        // go hangout in main area
+        MyState = StudentState.SearchingForProf;
     }
 
     private void Start()
@@ -58,10 +60,9 @@ public class Student : MonoBehaviour
         StartCoroutine(NextProfessor.ReceiveAdvice(this));
     }
 
-    public IEnumerator Chill()
+    private void Update()
     {
-        yield return new WaitForSecondsRealtime(3f);
-        // go hangout in main area
-        MyState = StudentState.SearchingForProf;
+        
     }
+
 }

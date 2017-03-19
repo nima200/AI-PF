@@ -13,8 +13,7 @@ public class Professor : MonoBehaviour
 
     public IEnumerator ReceiveAdvice(Student s)
     {
-//        s.MyState = StudentState.GettingAdvice;
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(2f);
         s.PreviousProfessors.Enqueue(s.NextProfessor);
         s.NextProfessor = GetNextProf(s);
         s.MyState = StudentState.SearchingForProf;
