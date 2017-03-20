@@ -4,8 +4,21 @@ using UnityEngine;
 public abstract class BehaviorNode
 {
     protected BehaviorResult Result;
-    // Empty constructor made by compiler
-    public abstract BehaviorResult Tick();
+    
+    public virtual BehaviorResult Process()
+    {
+        throw new NotImplementedException();   
+    }
+
+    public virtual void Initialize()
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual void Reset()
+    {
+        throw new NotImplementedException();
+    }
 
     protected void Print(string s)
     {

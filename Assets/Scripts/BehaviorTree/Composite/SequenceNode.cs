@@ -1,48 +1,34 @@
-﻿using System;
-
-public class SequenceNode : BehaviorNode
+﻿public class SequenceNode : CompositeNode
 {
-    protected BehaviorNode[] BehaviorNodes;
-
-    public SequenceNode(params BehaviorNode[] behaviorNodes)
+    /// <summary>
+    /// Attempts to proccess every child. If any fails, this fails. If all succeed it succeeds.
+    /// If end is reached but a child was running in the check, then it returns running.
+    /// </summary>
+    /// <returns>The behavior result</returns>
+    public override BehaviorResult Process()
     {
-        BehaviorNodes = behaviorNodes;
-    }
-
-    public override BehaviorResult Tick()
-    {
-        bool runningChild = false;
-        foreach (var node in BehaviorNodes)
+        bool childRunning = false;
+        foreach (var node in ChildrenNodes)
         {
-            try
+            switch (node.Process())
             {
-                switch (node.Tick())
-                {
-                    // If one child failed, return failure
-                    case BehaviorResult.Failure:
-                        Result = BehaviorResult.Failure;
-                        return Result;
-                    // If checked child succeeded try to keep going
-                    case BehaviorResult.Success:
-                        continue;
-                    // If child is running, take account of it and keep going. We'll come back to this later.
-                    case BehaviorResult.Running:
-                        runningChild = true;
-                        continue;
-                    default:
-                        Result = BehaviorResult.Success;
-                        return Result;
-                }
-            }
-            catch (Exception exception)
-            {
-                Print(exception.ToString());
-                Result = BehaviorResult.Failure;
-                return Result;
+                case BehaviorResult.FAIL:
+                    Print("A child failed. FAIL.");
+                    Result = BehaviorResult.FAIL;
+                    return Result;
+                case BehaviorResult.SUCCESS:
+                    continue;
+                case BehaviorResult.RUNNING:
+                    Print("A child is still running");
+                    childRunning = true;
+                    continue;
+                default:
+                    Result = BehaviorResult.SUCCESS;
+                    return Result;
             }
         }
-        // If there was a running child, return running, else all succeeded so return true
-        Result = runningChild ? BehaviorResult.Running : BehaviorResult.Success;
+        Result = childRunning ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Print(childRunning ? "A child is running, keep running" : "All children succeeded. SUCCESS.");
         return Result;
     }
 }

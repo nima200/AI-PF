@@ -2,8 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate BehaviorResult Return();
+public class BehaviorTree
+{
+    private readonly BehaviorNode _root;
 
-public class BehaviorTree {
-    
+    public BehaviorTree(BehaviorNode root)
+    {
+        _root = root;
+    }
+
+    public void ResetTree()
+    {
+        _root.Reset();
+    }
+
+    public void InitializeTree()
+    {
+        _root.Initialize();
+    }
+
+    public BehaviorResult ExecuteTree()
+    {
+        return _root.Process();
+    }
 }
