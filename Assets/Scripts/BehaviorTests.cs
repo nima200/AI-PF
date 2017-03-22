@@ -12,14 +12,16 @@ public class BehaviorTests : MonoBehaviour
         var profNameList = new List<string>()
         {
             "Paul Kry",
-            "Clark Verbrugge",
-            "Prakash Panengaden"
+            "Clark",
+            "Prakash"
         };
         
         var paulKryFind = new FindProf();
         var paulKryPlaque = new ReadPlaque();
         var paulKryAdvice = new GetAdvice();
-	    var paulKryAdviceSequence = new ProfAdviceSequence(paulKryFind, paulKryPlaque, paulKryAdvice);
+	    var paulKryInteraction = new InteractionSequence(paulKryFind, paulKryPlaque, paulKryAdvice);
+        var paulKryIdle = new Idle();
+        var paulKryAdviceSequence = new AdviceSequence(paulKryInteraction, paulKryIdle);
         /*var paulKry = new SequenceNode();
         paulKry.Add(paulKryAdviceSequence);
         paulKry.Add(new Idle());*/
@@ -27,7 +29,10 @@ public class BehaviorTests : MonoBehaviour
         var clarkFind = new FindProf();
         var clarkPlaque = new ReadPlaque();
         var clarkAdvice = new GetAdvice();
-        var clarkAdviceSequence = new ProfAdviceSequence(clarkFind, clarkPlaque, clarkAdvice);
+        var clarkInteraction = new InteractionSequence(clarkFind, clarkPlaque, clarkAdvice);
+        var clarkIdle= new Idle();
+	    var clarkAdviceSequence = new AdviceSequence(clarkInteraction, clarkIdle);
+
         /*var clark = new SequenceNode();
         clark.Add(clarkAdviceSequence);
         clark.Add(new Idle());*/
@@ -35,7 +40,10 @@ public class BehaviorTests : MonoBehaviour
         var prakashFind = new FindProf();
         var prakashPlaque = new ReadPlaque();
         var prakashAdvice = new GetAdvice();
-        var prakashAdviceSequence = new ProfAdviceSequence(prakashFind, prakashPlaque, prakashAdvice);
+        var prakashInteraction = new InteractionSequence(prakashFind, prakashPlaque, prakashAdvice);
+        var prakashIdle = new Idle();
+        var prakashAdviceSequence = new AdviceSequence(prakashInteraction, prakashIdle);
+
         /*var prakash = new SequenceNode();
         prakash.Add(prakashAdviceSequence);
         prakash.Add(new Idle());*/

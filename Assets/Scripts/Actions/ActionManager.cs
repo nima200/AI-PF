@@ -55,6 +55,7 @@ public class ActionManager : MonoBehaviour
     public IEnumerator Idle(Idle idle)
     {
         yield return new WaitForSecondsRealtime(5f);
+        idle.FinishedIdle = true;
         print("Done with idle");
     }
 

@@ -12,14 +12,13 @@ public class FindProf : LeafNode
 
     public override void Initialize()
     {
-        Print("Finding professor: " + Professor);
         Initialized = true;
         ActionManager.GetInstance().FindProfessor(this);
     }
 
     public override BehaviorResult Process()
     {
-        Print("Find professor for: " + Professor + " in progress.");
-        return !FoundProfessorPlaque ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Result = !FoundProfessorPlaque ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        return Result;
     }
 }

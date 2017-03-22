@@ -11,7 +11,6 @@
 
     public override void Initialize()
     {
-        Print("Look plaque for professor: " + Professor + " initialized.");
         Initialized = true;
         ActionManager.GetInstance().Read(this);
     }
@@ -23,7 +22,7 @@
 
     public override BehaviorResult Process()
     {
-        Print("ReadPlaque for: " + Professor + " processing.");
-        return !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Result = !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        return Result;
     }
 }

@@ -1,11 +1,11 @@
-public class ProfAdviceSequence : SequenceNode
+public class InteractionSequence : SequenceNode
 {
     public FindProf FindPlaqueNode;
     public ReadPlaque ReadPlaqueNode;
     public GetAdvice GetAdviceNode;
-    public string ProfessorName;
+    public string Professor;
 
-    public ProfAdviceSequence(FindProf findPlaqueNode, ReadPlaque readPlaqueNode, GetAdvice getAdviceNode)
+    public InteractionSequence(FindProf findPlaqueNode, ReadPlaque readPlaqueNode, GetAdvice getAdviceNode)
     {
         FindPlaqueNode = findPlaqueNode;
         ReadPlaqueNode = readPlaqueNode;
@@ -15,18 +15,23 @@ public class ProfAdviceSequence : SequenceNode
 
     public override void Initialize()
     {
-        FindPlaqueNode.Professor = ProfessorName;
-        ReadPlaqueNode.Professor = ProfessorName;
-        GetAdviceNode.Professor = ProfessorName;
+        Initialized = true;
+        FindPlaqueNode.Professor = Professor;
+        ReadPlaqueNode.Professor = Professor;
+        GetAdviceNode.Professor = Professor;
     }
 
     public override void SetProf(string professorName)
     {
-        ProfessorName = professorName;
+        Professor = professorName;
     }
 
     public override BehaviorResult Process()
     {
+        for (int i = 0; i < ChildrenNodes.Count; i++)
+        {
+            
+        }
         if (FindPlaqueNode.Initialized)
         {
             switch (FindPlaqueNode.Process())

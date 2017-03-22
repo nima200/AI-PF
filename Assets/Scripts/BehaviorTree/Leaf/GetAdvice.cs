@@ -24,6 +24,7 @@
     public override BehaviorResult Process()
     {
         Print("Get advice node processing");
-        return !FinishedTalking ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Result = !FinishedTalking ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        return Result;
     }
 }

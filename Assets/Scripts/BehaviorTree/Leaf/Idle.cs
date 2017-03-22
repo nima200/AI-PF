@@ -7,7 +7,9 @@ public class Idle : LeafNode
 
     public override void Initialize()
     {
+        Initialized = true;
         int random = Random.Range(0, 10);
+        Print(random.ToString());
         if (random < 5)
         {
             Print("Going into idle");
@@ -15,13 +17,15 @@ public class Idle : LeafNode
         }
         else
         {
+            Print("Skipped idle");
             FinishedIdle = true;
         }
     }
 
     public override BehaviorResult Process()
     {
-        return !FinishedIdle ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Result = !FinishedIdle ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        return Result;
     }
 
     public override void SetProf(string professorName)

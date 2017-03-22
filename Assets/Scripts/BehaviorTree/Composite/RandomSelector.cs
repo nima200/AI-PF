@@ -18,19 +18,16 @@ public class RandomSelector : CompositeNode
             switch (randomChild.Process())
             {
                 case BehaviorResult.FAIL:
-                    Print("Random child failed");
                     Result = BehaviorResult.FAIL;
                     return Result;
                 case BehaviorResult.SUCCESS:
-                    Print("Random child succeeded");
+                    Print("Random selector succeeded");
                     Result = BehaviorResult.SUCCESS;
                     return Result;
                 case BehaviorResult.RUNNING:
-                    Print("Random child running");
                     Result = BehaviorResult.RUNNING;
                     return Result;
                 default:
-                    Print("Default behavior: fail");
                     Result = BehaviorResult.FAIL;
                     return Result;
             }
