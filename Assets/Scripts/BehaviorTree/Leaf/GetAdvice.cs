@@ -1,17 +1,9 @@
 ﻿public class GetAdvice : LeafNode
 {
-    public string Professor;
     public bool FinishedTalking { get; set; }
-//    public bool Initialized { get; private set; }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
-    }
 
     public override void Initialize()
     {
-        Print("Get advice Initialized");
         Initialized = true;
         ActionManager.GetInstance().Talk(this);
     }
@@ -23,7 +15,6 @@
 
     public override BehaviorResult Process()
     {
-        Print("Get advice node processing");
         Result = !FinishedTalking ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
         return Result;
     }
