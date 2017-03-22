@@ -9,15 +9,30 @@ public class ActionManager : MonoBehaviour
 
     public void Talk(GetAdvice advice)
     {
-        print("Trying to talk");
+        print("Trying to talk to: " + advice.Professor);
         StartCoroutine(GetAdvice(advice));
     }
 
+
     public IEnumerator GetAdvice(GetAdvice advice)
     {
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(2f);
         advice.FinishedTalking = true;
-        print("Got advice");
+        print("Got advice from: " + advice.Professor);
+    }
+
+    public void Read(ReadPlaque plaque)
+    {
+        print("Reading: " + plaque.Professor + "'s plaque");
+        plaque.AdjacentToPlaque = true;
+        StartCoroutine(ReadPlaque(plaque));
+    }
+
+    public IEnumerator ReadPlaque(ReadPlaque read)
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        read.DoneReading = true;
+        print("Done reading " + read.Professor + "'s plaque");
     }
 
     private void Awake()

@@ -1,12 +1,17 @@
 ﻿public class SequenceNode : CompositeNode
 {
+    public override void Initialize()
+    {
+        
+    }
+
     /// <summary>
     /// Attempts to proccess every child. If any fails, this fails. If all succeed it succeeds.
     /// If end is reached but a child was running in the check, then it returns running.
     /// </summary>
     /// <returns>The behavior result</returns>
     public override BehaviorResult Process()
-    {
+    { 
         bool childRunning = false;
         foreach (var node in ChildrenNodes)
         {

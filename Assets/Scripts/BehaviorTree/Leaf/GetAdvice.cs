@@ -1,18 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class GetAdvice : LeafNode
 {
+    public string Professor;
     public bool FinishedTalking { get; set; }
+    public bool Initialized { get; private set; }
+
+    public override void SetProf(string professorName)
+    {
+        Professor = professorName;
+    }
+
     public override void Initialize()
     {
-        Print("Initialized");
+        Print("Get advice Initialized");
+        Initialized = true;
         ActionManager.GetInstance().Talk(this);
     }
 
     public override void Reset()
     {
-        Print("Reseted");
+        Print("Get advice Reseted");
     }
 
     public override BehaviorResult Process()

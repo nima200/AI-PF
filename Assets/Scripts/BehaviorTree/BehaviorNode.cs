@@ -24,4 +24,9 @@ public abstract class BehaviorNode
     {
         Debug.Log(s);
     }
+
+    public virtual void SetProf(string professorName)
+    {
+        throw new NotImplementedException();
+    }
 }
