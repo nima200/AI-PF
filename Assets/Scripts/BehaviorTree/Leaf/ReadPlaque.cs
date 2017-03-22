@@ -3,7 +3,6 @@
     public string Professor;
     public bool DoneReading { get; set; }
     public bool AdjacentToPlaque { get; set; }
-    public bool Initialized { get; private set; }
 
     public override void SetProf(string professorName)
     {

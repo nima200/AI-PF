@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
-
-public class GetAdvice : LeafNode
+﻿public class GetAdvice : LeafNode
 {
     public string Professor;
     public bool FinishedTalking { get; set; }
-    public bool Initialized { get; private set; }
+//    public bool Initialized { get; private set; }
 
     public override void SetProf(string professorName)
     {

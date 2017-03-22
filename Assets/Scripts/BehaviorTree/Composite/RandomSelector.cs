@@ -12,8 +12,7 @@ public class RandomSelector : CompositeNode
     /// <returns>The result of the random child chosen.</returns>
     public override BehaviorResult Process()
     {
-        if (_previousRandom == null || _previousRandom.Process() == BehaviorResult.FAIL ||
-            _previousRandom.Process() == BehaviorResult.SUCCESS) 
+        if (_previousRandom == null || _previousRandom.Process() == BehaviorResult.FAIL || _previousRandom.Process() == BehaviorResult.SUCCESS) 
         {
             var randomChild = GetRandomChild();
             switch (randomChild.Process())

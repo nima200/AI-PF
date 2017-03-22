@@ -1,6 +1,4 @@
-﻿using System;
-
-public abstract class LeafNode : BehaviorNode
+﻿public abstract class LeafNode : BehaviorNode
 {
     public override void Initialize()
     {

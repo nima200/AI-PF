@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionManager : MonoBehaviour
@@ -33,6 +32,30 @@ public class ActionManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(1f);
         read.DoneReading = true;
         print("Done reading " + read.Professor + "'s plaque");
+    }
+
+    public void FindProfessor(FindProf findProf)
+    {
+        print("Searching for professor: " + findProf.Professor);
+        StartCoroutine(FindPath(findProf));
+    }
+
+    public IEnumerator FindPath(FindProf findProf)
+    {
+        yield return new WaitForSecondsRealtime(4f);
+        findProf.FoundProfessorPlaque = true;
+        print("Found professor: " + findProf.Professor);
+    }
+
+    public void GoIdle(Idle idle)
+    {
+        StartCoroutine(Idle(idle));
+    }
+
+    public IEnumerator Idle(Idle idle)
+    {
+        yield return new WaitForSecondsRealtime(5f);
+        print("Done with idle");
     }
 
     private void Awake()

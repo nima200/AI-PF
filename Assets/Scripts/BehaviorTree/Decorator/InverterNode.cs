@@ -1,6 +1,4 @@
-﻿using System;
-
-public class InverterNode : DecoratorNode
+﻿public class InverterNode : DecoratorNode
 {
     public InverterNode(BehaviorNode childNode) : base(childNode) { }
 

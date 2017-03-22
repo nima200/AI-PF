@@ -1,8 +1,28 @@
-﻿public class SequenceNode : CompositeNode
+﻿using System;
+
+public class SequenceNode : CompositeNode
 {
     public override void Initialize()
     {
-        
+        for (int i = 0; i < ChildrenNodes.Count - 1; i++)
+        {
+            var child = ChildrenNodes[i];
+            var nextChild = ChildrenNodes[i + 1];
+            if (child.Initialized && child.Result == BehaviorResult.SUCCESS)
+            {
+                nextChild.Initialize();
+                break;
+            }
+            child.Initialize();
+        }
+    }
+
+    public override void SetProf(string professorName)
+    {
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetProf(professorName);
+        }
     }
 
     /// <summary>
@@ -11,29 +31,27 @@
     /// </summary>
     /// <returns>The behavior result</returns>
     public override BehaviorResult Process()
-    { 
-        bool childRunning = false;
-        foreach (var node in ChildrenNodes)
-        {
-            switch (node.Process())
-            {
-                case BehaviorResult.FAIL:
-                    Print("A child failed. FAIL.");
-                    Result = BehaviorResult.FAIL;
-                    return Result;
-                case BehaviorResult.SUCCESS:
-                    continue;
-                case BehaviorResult.RUNNING:
-                    Print("A child is still running");
-                    childRunning = true;
-                    continue;
-                default:
-                    Result = BehaviorResult.SUCCESS;
-                    return Result;
-            }
-        }
-        Result = childRunning ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
-        Print(childRunning ? "A child is running, keep running" : "All children succeeded. SUCCESS.");
-        return Result;
+    {
+                bool childRunning = false;
+                foreach (var node in ChildrenNodes)
+                {
+                    switch (node.Process())
+                    {
+                        case BehaviorResult.FAIL:
+                            Print("A child failed. FAIL.");
+                            Result = BehaviorResult.FAIL;
+                            return Result;
+                        case BehaviorResult.SUCCESS:
+                            continue;
+                        case BehaviorResult.RUNNING:
+                            childRunning = true;
+                            continue;
+                        default:
+                            Result = BehaviorResult.SUCCESS;
+                            return Result;
+                    }
+                }
+                Result = childRunning ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+                return Result;
     }
 }

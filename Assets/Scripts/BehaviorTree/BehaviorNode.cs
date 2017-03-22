@@ -3,7 +3,8 @@ using UnityEngine;
 
 public abstract class BehaviorNode
 {
-    protected BehaviorResult Result;
+    public bool Initialized;
+    public BehaviorResult Result { get; protected set; }
     
     public virtual BehaviorResult Process()
     {

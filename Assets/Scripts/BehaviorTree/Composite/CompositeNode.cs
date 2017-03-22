@@ -18,7 +18,6 @@ public abstract class CompositeNode : BehaviorNode
     {
         foreach (var node in ChildrenNodes)
         {
-            Print("Calling onto a child's initialize");
             node.Initialize();
         }
     }

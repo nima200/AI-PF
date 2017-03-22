@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class BehaviorTree
+﻿public class BehaviorTree
 {
     private readonly BehaviorNode _root;
 
