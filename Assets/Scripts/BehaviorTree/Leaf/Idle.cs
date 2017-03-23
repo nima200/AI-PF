@@ -9,7 +9,6 @@ public class Idle : LeafNode
     {
         Initialized = true;
         int random = Random.Range(0, 10);
-        Print(random.ToString());
         if (random < 5)
         {
             Print("Going into idle");

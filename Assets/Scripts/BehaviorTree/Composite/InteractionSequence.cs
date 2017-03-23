@@ -1,5 +1,3 @@
-using System;
-
 public class InteractionSequence : SequenceNode
 {
     public override void Initialize()

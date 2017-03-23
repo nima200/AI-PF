@@ -1,6 +1,4 @@
-﻿using System;
-
-public class SequenceNode : CompositeNode
+﻿public class SequenceNode : CompositeNode
 {
     public override void Initialize()
     {

@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-public class FindProf : LeafNode
+﻿public class FindProf : LeafNode
 {
     public string Professor;
     public bool FoundProfessorPlaque { get; set; }
