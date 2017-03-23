@@ -4,7 +4,6 @@ using UnityEngine;
 public abstract class BehaviorNode
 {
     public bool Initialized;
-    public string Professor;
     public BehaviorResult Result { get; protected set; }
     
     public virtual BehaviorResult Process()
@@ -19,7 +18,7 @@ public abstract class BehaviorNode
 
     public virtual void Reset()
     {
-        throw new NotImplementedException();
+        Initialized = false;
     }
 
     protected void Print(string s)
@@ -29,6 +28,6 @@ public abstract class BehaviorNode
 
     public virtual void SetProf(string professorName)
     {
-        Professor = professorName;
+        throw new NotImplementedException();
     }
 }

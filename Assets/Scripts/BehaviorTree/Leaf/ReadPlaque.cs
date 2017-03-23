@@ -4,11 +4,6 @@
     public bool DoneReading { get; set; }
     public bool AdjacentToPlaque { get; set; }
 
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
-    }
-
     public override void Initialize()
     {
         Initialized = true;
@@ -17,12 +12,19 @@
 
     public override void Reset()
     {
-        Print("Look plaque for: " + Professor + " Reseted");
+        base.Reset();
+        DoneReading = false;
+        AdjacentToPlaque = false;
     }
 
     public override BehaviorResult Process()
     {
         Result = !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
         return Result;
+    }
+
+    public override void SetProf(string professorName)
+    {
+        Professor = professorName;
     }
 }

@@ -28,6 +28,12 @@ public class Idle : LeafNode
         return Result;
     }
 
+    public override void Reset()
+    {
+        base.Reset();
+        FinishedIdle = false;
+    }
+
     public override void SetProf(string professorName)
     {
         Professor = professorName;

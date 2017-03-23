@@ -19,6 +19,7 @@ public class SequenceNode : CompositeNode
 
     public override void SetProf(string professorName)
     {
+        Professor = professorName;
         foreach (var node in ChildrenNodes)
         {
             node.SetProf(professorName);

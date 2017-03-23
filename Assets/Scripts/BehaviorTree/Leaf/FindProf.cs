@@ -5,11 +5,6 @@ public class FindProf : LeafNode
     public string Professor;
     public bool FoundProfessorPlaque { get; set; }
 
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
-    }
-
     public override void Initialize()
     {
         Initialized = true;
@@ -20,5 +15,16 @@ public class FindProf : LeafNode
     {
         Result = !FoundProfessorPlaque ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
         return Result;
+    }
+
+    public override void Reset()
+    {
+        base.Reset();
+        FoundProfessorPlaque = false;
+    }
+
+    public override void SetProf(string professorName)
+    {
+        Professor = professorName;
     }
 }

@@ -46,4 +46,12 @@ public class RandomSelector : CompositeNode
             return ChildrenNodes[randomChildIndex];
         }
     }
+
+    public override void SetProf(string professorName)
+    {
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetProf(professorName);
+        }
+    }
 }

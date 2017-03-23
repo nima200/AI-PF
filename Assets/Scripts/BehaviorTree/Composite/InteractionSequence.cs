@@ -2,18 +2,6 @@ using System;
 
 public class InteractionSequence : SequenceNode
 {
-//    public FindProf FindPlaqueNode;
-//    public ReadPlaque ReadPlaqueNode;
-//    public GetAdvice GetAdviceNode;
-    public string Professor;
-
-//    public InteractionSequence(FindProf findPlaqueNode, ReadPlaque readPlaqueNode, GetAdvice getAdviceNode)
-//    {
-//        FindPlaqueNode = findPlaqueNode;
-//        ReadPlaqueNode = readPlaqueNode;
-//        GetAdviceNode = getAdviceNode;
-//    }
-
     public override void Initialize()
     {
         Initialized = true;
@@ -21,16 +9,13 @@ public class InteractionSequence : SequenceNode
         {
             childrenNode.SetProf(Professor);
         }
-//        FindPlaqueNode.Professor = Professor;
-//        ReadPlaqueNode.Professor = Professor;
-//        GetAdviceNode.Professor = Professor;
     }
 
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
-    }
-
+    /// <summary>
+    /// Initializes the first child and attempts to process it. Once that is done, moves on to initialization
+    /// and processing of the next child. This happens until the last child is done. Fails if any child fails.
+    /// </summary>
+    /// <returns>Returns SUCCESS only if all children succeed.</returns>
     public override BehaviorResult Process()
     {
         for (int i = 0; i < ChildrenNodes.Count - 1; i++)
@@ -92,64 +77,5 @@ public class InteractionSequence : SequenceNode
         }
         Result = BehaviorResult.RUNNING;
         return Result;
-
-
-/*        if (FindPlaqueNode.Initialized)
-        {
-            switch (FindPlaqueNode.Process())
-            {
-                case BehaviorResult.FAIL:
-                    Result = BehaviorResult.FAIL;
-                    return Result;
-                case BehaviorResult.SUCCESS:
-                    if (ReadPlaqueNode.Initialized)
-                    {
-                        switch (ReadPlaqueNode.Process())
-                        {
-                            case BehaviorResult.FAIL:
-                                Result = BehaviorResult.FAIL;
-                                return Result;
-                            case BehaviorResult.SUCCESS:
-                                if (GetAdviceNode.Initialized)
-                                {
-                                    switch (GetAdviceNode.Process())
-                                    {
-                                        case BehaviorResult.FAIL:
-                                            Result = BehaviorResult.FAIL;
-                                            return Result;
-                                        case BehaviorResult.SUCCESS:
-                                            Result = BehaviorResult.SUCCESS;
-                                            return Result;
-                                        case BehaviorResult.RUNNING:
-                                            Result = BehaviorResult.RUNNING;
-                                            return Result;
-                                    }
-                                }
-                                GetAdviceNode.Initialize();
-                                Result = BehaviorResult.RUNNING;
-                                return Result;
-                            case BehaviorResult.RUNNING:
-                                Result = BehaviorResult.RUNNING;
-                                return Result;
-                            default:
-                                Result = BehaviorResult.FAIL;
-                                return Result;
-                        }
-                    }
-                    ReadPlaqueNode.Initialize();
-                    Result = BehaviorResult.RUNNING;
-                    return Result;
-                case BehaviorResult.RUNNING:
-                    Result = BehaviorResult.RUNNING;
-                    return Result;
-                default:
-                    Result = BehaviorResult.FAIL;
-                    return Result;
-            }
-        }
-        FindPlaqueNode.Initialize();
-        Result = BehaviorResult.RUNNING;
-        return Result;
-    }*/
     }
 }

@@ -3,7 +3,7 @@
 public abstract class CompositeNode : BehaviorNode
 {
     protected List<BehaviorNode> ChildrenNodes;
-
+    public string Professor;
     protected CompositeNode()
     {
         ChildrenNodes = new List<BehaviorNode>();
@@ -24,9 +24,18 @@ public abstract class CompositeNode : BehaviorNode
 
     public override void Reset()
     {
+        Initialized = false;
         foreach (var node in ChildrenNodes)
         {
             node.Reset();
+        }
+    }
+
+    public override void SetProf(string professorName)
+    {
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetProf(professorName);
         }
     }
 }
