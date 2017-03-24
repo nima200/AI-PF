@@ -14,7 +14,7 @@ public class Grid : MonoBehaviour
     public bool DrawGizmos;
     public int MaxSize { get { return _sizeX * _sizeY; } }
 
-    private void Start()
+    private void Awake()
     {
         _nodeDiameter = NodeRadius * 2;
         _sizeX = Mathf.RoundToInt(GridWorldSize.x / _nodeDiameter);
@@ -80,22 +80,12 @@ public class Grid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (DrawGizmos)
+        Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, 1, GridWorldSize.y));
+        if (_grid == null || !DrawGizmos) return;
+        foreach (var n in _grid)
         {
-            Gizmos.DrawCube(transform.position, new Vector3(GridWorldSize.x, 1, GridWorldSize.y));
-            if (_grid == null) return;
-            foreach (var n in _grid)
-            {
-                Gizmos.color = (n.Walkable) ? Color.white : Color.red;
-                if (Path != null)
-                {
-                    if (Path.Contains(n))
-                    {
-                        Gizmos.color = Color.black;
-                    }
-                }
-                Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter - .1f));
-            }
+            Gizmos.color = (n.Walkable) ? Color.white : Color.red;
+            Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter - .1f));
         }
     }
 }
