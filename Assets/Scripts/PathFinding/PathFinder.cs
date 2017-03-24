@@ -10,7 +10,6 @@ public class PathFinder : MonoBehaviour
     private PathRequestManager _pathRequestManager;
     private Grid _grid;
 
-    [UsedImplicitly]
     private void Awake()
     {
         _pathRequestManager = GetComponent<PathRequestManager>();
@@ -24,7 +23,7 @@ public class PathFinder : MonoBehaviour
         sw.Start();
 
         var waypoints = new Vector3[0];
-        var pathSuccess = false;
+        bool pathSuccess = false;
 
         var startNode = _grid.NodeFromWorld(startPosition);
         var endNode = _grid.NodeFromWorld(endPosition);
@@ -64,7 +63,7 @@ public class PathFinder : MonoBehaviour
                 foreach (var neighbor in _grid.GetNeighbors(currentNode))
                 {
                     if (!neighbor.Walkable || closedSet.Contains(neighbor)) continue;
-                    int newCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
+                    int newCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor) + neighbor.MovementPenalty;
                     if (newCostToNeighbor >= neighbor.GCost && openSet.Contains(neighbor)) continue;
                     neighbor.GCost = newCostToNeighbor;
                     neighbor.HCost = GetDistance(neighbor, endNode);
@@ -109,6 +108,11 @@ public class PathFinder : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Attempts to simplify path so that it creates waypoints only when the path is changing its direction, instead of a waypoint all along the path.
+    /// </summary>
+    /// <param name="path">The path to simplify</param>
+    /// <returns>The simplified waypoints</returns>
     private static Vector3[] SimplifyPath(IList<Node> path)
     {
         var waypoints = new List<Vector3>();
@@ -137,8 +141,6 @@ public class PathFinder : MonoBehaviour
      /// <returns></returns>
     private static int GetDistance(Node a, Node b)
     {
-         
-
         int distanceX = Mathf.Abs(a.GridX - b.GridX);
         int distanceY = Mathf.Abs(a.GridY - b.GridY);
 

@@ -8,6 +8,7 @@ public class Node : IHeapItem<Node>{
     public int HCost; // Distance from destination node
     public int GridX; // For a node to keep track of where it is
     public int GridY; // For a node to keep track of where it is
+    public int MovementPenalty;
     public int FCost // Total cost
     {
         get { return GCost + HCost; }
@@ -17,12 +18,13 @@ public class Node : IHeapItem<Node>{
 
     public Node Parent;
 
-    public Node(bool walkable, Vector3 worldPos, int gridX, int gridY)
+    public Node(bool walkable, Vector3 worldPos, int gridX, int gridY, int penalty)
     {
         Walkable = walkable;
         WorldPosition = worldPos;
         GridX = gridX;
         GridY = gridY;
+        MovementPenalty = penalty;
     }
 
     public int CompareTo(Node other)
