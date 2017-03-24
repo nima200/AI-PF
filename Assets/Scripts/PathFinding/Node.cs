@@ -1,30 +1,34 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Node : IHeapItem<Node>{
+[System.Serializable]
+public class Node : IHeapItem<Node>
+{
     public bool Walkable;
     public Vector3 WorldPosition;
-    public int GCost; // Distance from start node
-    public int HCost; // Distance from destination node
-    public int GridX; // For a node to keep track of where it is
-    public int GridY; // For a node to keep track of where it is
-    public int MovementPenalty;
-    public int FCost // Total cost
+    public int GCost;
+    public int HCost;
+    public Node Parent;
+    private int _heapIndex;
+    public int HeapIndex
+    {
+        get { return _heapIndex; }
+        set { _heapIndex = value; }
+    }
+
+    public int FCost
     {
         get { return GCost + HCost; }
     }
 
-    public int HeapIndex { get; set; }
+    public int GridX;
+    public int GridY;
 
-    public Node Parent;
-
-    public Node(bool walkable, Vector3 worldPos, int gridX, int gridY, int penalty)
+    public Node(bool walkable, Vector3 worldPosition, int gridX, int gridY)
     {
         Walkable = walkable;
-        WorldPosition = worldPos;
+        WorldPosition = worldPosition;
         GridX = gridX;
         GridY = gridY;
-        MovementPenalty = penalty;
     }
 
     public int CompareTo(Node other)
@@ -33,6 +37,7 @@ public class Node : IHeapItem<Node>{
         if (compare == 0)
         {
             compare = HCost.CompareTo(other.HCost);
+
         }
         return -compare;
     }
