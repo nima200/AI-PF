@@ -24,7 +24,7 @@ public class Grid : MonoBehaviour
 
     private void CreateGrid()
     {
-        int numTimeSteps = 100;
+        int numTimeSteps = 10;
         Nodes = new Node[numTimeSteps,_sizeX,_sizeY];
         var worldBottomLeft = transform.position - Vector3.right * GridWorldSize.x / 2 -
                                   Vector3.forward * GridWorldSize.y / 2;
@@ -65,14 +65,18 @@ public class Grid : MonoBehaviour
                 // pause neighbor
                 if (x == 0 && y == 0)
                 {
-//                    neighbors.Add(Nodes[time + 1, x, y]);
+                    neighbors.Add(Nodes[time + 1, x, y]);
                 }
-                int checkX = node.X + x;
-                int checkY = node.Y + y;
-                if (checkX >= 0 && checkX < _sizeX && checkY >= 0 && checkY < _sizeY)
+                else
                 {
-                    neighbors.Add(Nodes[time + 1, checkX, checkY]);
+                    int checkX = node.X + x;
+                    int checkY = node.Y + y;
+                    if (checkX >= 0 && checkX < _sizeX && checkY >= 0 && checkY < _sizeY)
+                    {
+                        neighbors.Add(Nodes[time + 1, checkX, checkY]);
+                    }
                 }
+                
             }
         }
         
