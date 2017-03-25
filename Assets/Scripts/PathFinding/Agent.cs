@@ -75,8 +75,7 @@ public class Agent : MonoBehaviour
                 }
                 transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
                 yield return null;
-            }
-        }
+            }        }
     }
 
     public void OnDrawGizmos()

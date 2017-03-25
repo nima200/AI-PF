@@ -19,33 +19,43 @@ public class AStar : MonoBehaviour
     {
 
         var waypoints = new Vector3[0];
-        var foundPath = false;
+        bool foundPath = false;
 
         // Convert the two world positions into actual nodes.
-        var startNode = _grid.NodeFromWorldPoint(start);
-        var targetNode = _grid.NodeFromWorldPoint(target);
+        var startNode = _grid.NodeFromWorldPoint(start, 0);
+        var targetNode = _grid.NodeFromWorldPoint(target, 0);
 
 
         // The sets
-        if (startNode.Walkable && targetNode.Walkable)
+        if (startNode.Walkable)
         {
             var openSet = new Heap<Node>(_grid.MaxSize);
             var closedSet = new HashSet<Node>();
 
             openSet.Add(startNode);
+            int time = 0;
             while (openSet.Count > 0)
             {
+                // currentnode = node with lowest FCost. This is added to the path.
                 var currentNode = openSet.RemoveFirst();
                 closedSet.Add(currentNode);
+                currentNode.Walkable = false;
+                // Requests the grid to create a new timestep layer in the Node3D array.
+                // Moves the target node to the new layer
+                _grid.RequestNewTimeStep();
+                targetNode = _grid.NodeFromWorldPoint(target, time + 1);
+
 
                 // If this succeeds, it means path is found.
-                if (currentNode == targetNode)
+                if (currentNode.GridX == targetNode.GridX && currentNode.GridY == targetNode.GridY)
                 {
+                    _grid.RequestDeleteTimeStep();
+                    targetNode = _grid.NodeFromWorldPoint(target, _grid.GetTimeStepCount() - 1);
                     foundPath = true;
                     break;
                 }
 
-                foreach (var neighbor in _grid.GetNeighbors(currentNode))
+                foreach (var neighbor in _grid.GetNeighbors(currentNode, time))
                 {
                     if (!neighbor.Walkable || closedSet.Contains(neighbor)) continue;
 
@@ -65,6 +75,7 @@ public class AStar : MonoBehaviour
                         }
                     }
                 }
+                time++;
             }
         }
         else
@@ -91,7 +102,7 @@ public class AStar : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.Parent;
         }
-        var  waypoints = NodesToVector3s(path);
+        var waypoints = NodesToVector3s(path);
         Array.Reverse(waypoints);
         return waypoints;
     }
