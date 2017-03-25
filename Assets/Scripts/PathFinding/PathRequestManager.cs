@@ -25,9 +25,9 @@ public class PathRequestManager : MonoBehaviour
     /// <param name="pathStart">The start of the path</param>
     /// <param name="pathEnd">The end of the path</param>
     /// <param name="callback">The method to be called once the path has been found</param>
-    public static void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback)
+    public static void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback, Agent caller)
     {
-        var newRequest = new PathRequest(pathStart, pathEnd, callback);
+        var newRequest = new PathRequest(pathStart, pathEnd, callback, caller);
         _instance._pathRequests.Enqueue(newRequest);
         _instance.TryProcessNext();
     }
@@ -41,7 +41,7 @@ public class PathRequestManager : MonoBehaviour
         {
             _currentPathRequest = _pathRequests.Dequeue();
             _isProcessingPath = true;
-            _pathFinder.StartFindPath(_currentPathRequest.PathStart, _currentPathRequest.PathEnd);
+            _pathFinder.StartFindPath(_currentPathRequest.PathStart, _currentPathRequest.PathEnd, _currentPathRequest.Caller);
         }
     }
 

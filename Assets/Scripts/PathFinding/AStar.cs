@@ -8,6 +8,7 @@ public class AStar : MonoBehaviour
 {
     private PathRequestManager _requestManager;
     private Grid _grid;
+    private Dictionary<string, Agent> _reservationTable = new Dictionary<string, Agent>();
 
     private void Awake()
     {
@@ -15,13 +16,13 @@ public class AStar : MonoBehaviour
         _requestManager = GetComponent<PathRequestManager>();
     }
 
-    private IEnumerator FindPath(Vector3 start, Vector3 target)
+    private IEnumerator FindPath(Vector3 start, Vector3 target, Agent caller)
     {
 
         var waypoints = new Vector3[0];
         bool foundPath = false;
 
-        // Convert the two world positions into actual nodes.
+        // Convert the two start and end positions into actual nodes.
         var startNode = _grid.NodeFromWorldPoint(start, 0);
         var targetNode = _grid.NodeFromWorldPoint(target, 0);
 
@@ -29,35 +30,40 @@ public class AStar : MonoBehaviour
         // The sets
         if (startNode.Walkable)
         {
-            var openSet = new Heap<Node>(_grid.MaxSize);
+            var openSet = new List<Node>();
             var closedSet = new HashSet<Node>();
 
             openSet.Add(startNode);
             int time = 0;
             while (openSet.Count > 0)
             {
-                // currentnode = node with lowest FCost. This is added to the path.
-                var currentNode = openSet.RemoveFirst();
-                closedSet.Add(currentNode);
-                currentNode.Walkable = false;
-                // Requests the grid to create a new timestep layer in the Node3D array.
-                // Moves the target node to the new layer
-                _grid.RequestNewTimeStep();
-                targetNode = _grid.NodeFromWorldPoint(target, time + 1);
 
+                // currentnode = node with lowest FCost. This is added to the path.
+                var currentNode = openSet[0];
+                for (int i = 1; i < openSet.Count; i++)
+                {
+                    if (openSet[i].FCost < currentNode.FCost || openSet[i].FCost == currentNode.FCost)
+                    {
+                        if (openSet[i].HCost < currentNode.HCost)
+                            currentNode = openSet[i];
+                    }
+                }
+
+                openSet.Remove(currentNode);
+                closedSet.Add(currentNode);
 
                 // If this succeeds, it means path is found.
-                if (currentNode.GridX == targetNode.GridX && currentNode.GridY == targetNode.GridY)
+                if (currentNode.X == targetNode.X && currentNode.Y == targetNode.Y)
                 {
-                    _grid.RequestDeleteTimeStep();
-                    targetNode = _grid.NodeFromWorldPoint(target, _grid.GetTimeStepCount() - 1);
+                    targetNode = _grid.NodeFromWorldPoint(target, time);
                     foundPath = true;
                     break;
                 }
 
                 foreach (var neighbor in _grid.GetNeighbors(currentNode, time))
                 {
-                    if (!neighbor.Walkable || closedSet.Contains(neighbor)) continue;
+                    string key = neighbor.X + ":" + neighbor.Y + ":" + neighbor.T;
+                    if (!neighbor.Walkable || closedSet.Contains(neighbor) || _reservationTable.ContainsKey(key)) continue;
 
                     int newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
                     if (newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
@@ -69,10 +75,10 @@ public class AStar : MonoBehaviour
                         {
                             openSet.Add(neighbor);
                         }
-                        else
-                        {
-                            openSet.UpdateItem(neighbor);
-                        }
+//                        else
+//                        {
+//                            openSet.UpdateItem(neighbor);
+//                        }
                     }
                 }
                 time++;
@@ -86,21 +92,25 @@ public class AStar : MonoBehaviour
         if (foundPath)
         {
             // Attempt to retrace the path back if the path was actually found
-            waypoints = RetracePath(startNode, targetNode);
+            waypoints = RetracePath(startNode, targetNode, caller);
         }
         // Alert the Path Request Manager that the path finding was completed 
         // and hand over the path and result of pathfinding.
         _requestManager.FinishedProcessingPath(waypoints, foundPath);
     }
 
-    private Vector3[] RetracePath(Node startNode, Node endNode)
+    private Vector3[] RetracePath(Node startNode, Node endNode, Agent caller)
     {
         var path = new List<Node>();
         var currentNode = endNode;
+        string key = currentNode.X + ":" + currentNode.Y + ":" + currentNode.T;
+        _reservationTable.Add(key, caller);
         while (currentNode != startNode)
         {
             path.Add(currentNode);
             currentNode = currentNode.Parent;
+            key = currentNode.X + ":" + currentNode.Y + ":" + currentNode.T;
+            _reservationTable.Add(key, caller);
         }
         var waypoints = NodesToVector3s(path);
         Array.Reverse(waypoints);
@@ -113,7 +123,7 @@ public class AStar : MonoBehaviour
         var directionOld = Vector2.zero;
         for (int i = 1; i < path.Count; i++)
         {
-            var directionNew = new Vector2(path[i-1].GridX - path[i].GridX, path[i-1].GridY - path[i].GridY);
+            var directionNew = new Vector2(path[i-1].X - path[i].X, path[i-1].Y - path[i].Y);
             if (directionNew != directionOld)
             {
                 waypoints.Add(path[i].WorldPosition);
@@ -130,8 +140,8 @@ public class AStar : MonoBehaviour
 
     private int GetDistance(Node a, Node b)
     {
-        int distanceX = Mathf.Abs(a.GridX - b.GridX);
-        int distanceY = Mathf.Abs(a.GridY - b.GridY);
+        int distanceX = Mathf.Abs(a.X - b.X);
+        int distanceY = Mathf.Abs(a.Y - b.Y);
 
         if (distanceX > distanceY)
         {
@@ -140,8 +150,8 @@ public class AStar : MonoBehaviour
         return 14 * distanceX + 10 * (distanceY * distanceX);
     }
 
-    public void StartFindPath(Vector3 startPosition, Vector3 targetPosition)
+    public void StartFindPath(Vector3 startPosition, Vector3 targetPosition, Agent caller)
     {
-        StartCoroutine(FindPath(startPosition, targetPosition));
+        StartCoroutine(FindPath(startPosition, targetPosition, caller));
     }
 }

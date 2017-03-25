@@ -11,7 +11,7 @@ public class Node3D
 
     public void NewTimeStep()
     {
-        Nodes.Add(new Node(Nodes[0].Walkable, Nodes[0].WorldPosition, Nodes[0].GridX, Nodes[0].GridY, Nodes.Count));
+        Nodes.Add(new Node(Nodes[0].Walkable, Nodes[0].WorldPosition, Nodes[0].X, Nodes[0].Y, Nodes.Count));
     }
 
     public void DeleteTimeStep()
@@ -23,12 +23,15 @@ public class Node3D
 [System.Serializable]
 public class Node : IHeapItem<Node>
 {
-    public bool Walkable;
+    public int X;
+    public int Y;
+    public int T;
+    public Node Parent;
+    public bool Walkable { get; set; }
     public Vector3 WorldPosition;
     public int GCost;
     public int HCost;
-    public Node Parent;
-    private int _timeStep;
+    
     private int _heapIndex;
     public int HeapIndex
     {
@@ -41,16 +44,15 @@ public class Node : IHeapItem<Node>
         get { return GCost + HCost; }
     }
 
-    public int GridX;
-    public int GridY;
+    
 
-    public Node(bool walkable, Vector3 worldPosition, int gridX, int gridY, int timeStep)
+    public Node(bool walkable, Vector3 worldPosition, int x, int y, int timeStep)
     {
         Walkable = walkable;
         WorldPosition = worldPosition;
-        GridX = gridX;
-        GridY = gridY;
-        _timeStep = timeStep;
+        X = x;
+        Y = y;
+        T = timeStep;
     }
 
     public int CompareTo(Node other)

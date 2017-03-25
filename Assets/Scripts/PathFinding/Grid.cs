@@ -8,7 +8,7 @@ public class Grid : MonoBehaviour
     public Vector2 GridWorldSize;
     public float NodeRadius;
     private float _nodeDiameter;
-    public Node3D[,] Nodes { get; private set; }
+    public Node[,,] Nodes { get; private set; }
     private int _sizeX, _sizeY;
     public List<Node> Path;
     public bool DrawGizmos;
@@ -24,17 +24,21 @@ public class Grid : MonoBehaviour
 
     private void CreateGrid()
     {
-        Nodes = new Node3D[_sizeX,_sizeY];
+        int numTimeSteps = 100;
+        Nodes = new Node[numTimeSteps,_sizeX,_sizeY];
         var worldBottomLeft = transform.position - Vector3.right * GridWorldSize.x / 2 -
                                   Vector3.forward * GridWorldSize.y / 2;
-        for (int x = 0; x < _sizeX; x++)
+        for (int t = 0; t < numTimeSteps; t++)
         {
-            for (int y = 0; y < _sizeY; y++)
+            for (int x = 0; x < _sizeX; x++)
             {
-                var worldPoint = worldBottomLeft + Vector3.right * (x * _nodeDiameter + NodeRadius) +
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    var worldPoint = worldBottomLeft + Vector3.right * (x * _nodeDiameter + NodeRadius) +
                                      Vector3.forward * (y * _nodeDiameter + NodeRadius);
-                bool walkable = !(Physics.CheckSphere(worldPoint, NodeRadius, UnwalkableMask));
-                Nodes[x, y] = new Node3D(walkable, worldPoint, x, y);
+                    bool walkable = !(Physics.CheckSphere(worldPoint, NodeRadius, UnwalkableMask));
+                    Nodes[t, x, y] = new Node(walkable, worldPoint, x, y, t);
+                }
             }
         }
     }
@@ -48,47 +52,31 @@ public class Grid : MonoBehaviour
 
         int x = Mathf.RoundToInt((_sizeX - 1) * percentX);
         int y = Mathf.RoundToInt((_sizeY - 1) * percentY);
-        return Nodes[x, y].Nodes[time];
+        return Nodes[time, x, y];
     }
 
-    public List<Node> GetNeighbors(Node node, int currentTime)
+    public List<Node> GetNeighbors(Node node, int time)
     {
         var neighbors = new List<Node>();
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
             {
-                if (x == 0 && y == 0) continue;
-                int checkX = node.GridX + x;
-                int checkY = node.GridY + y;
+                // pause neighbor
+                if (x == 0 && y == 0)
+                {
+//                    neighbors.Add(Nodes[time + 1, x, y]);
+                }
+                int checkX = node.X + x;
+                int checkY = node.Y + y;
                 if (checkX >= 0 && checkX < _sizeX && checkY >= 0 && checkY < _sizeY)
                 {
-                    neighbors.Add(Nodes[checkX, checkY].Nodes[currentTime + 1]);
+                    neighbors.Add(Nodes[time + 1, checkX, checkY]);
                 }
             }
         }
+        
         return neighbors;
-    }
-
-    public int GetTimeStepCount()
-    {
-        return Nodes[0, 0].Nodes.Count;
-    }
-
-    public void RequestNewTimeStep()
-    {
-        foreach (var node3D in Nodes)
-        {
-            node3D.NewTimeStep();
-        }
-    }
-
-    public void RequestDeleteTimeStep()
-    {
-        foreach (var node3D in Nodes)
-        {
-            node3D.DeleteTimeStep();
-        }
     }
 
     private void OnDrawGizmos()
@@ -97,8 +85,8 @@ public class Grid : MonoBehaviour
         if (Nodes == null || !DrawGizmos) return;
         foreach (var n in Nodes)
         {
-            Gizmos.color = (n.Nodes[0].Walkable) ? Color.white : Color.red;
-            Gizmos.DrawCube(n.Nodes[0].WorldPosition, Vector3.one * (_nodeDiameter - .1f));
+            Gizmos.color = (n.Walkable) ? Color.white : Color.red;
+            Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter - .1f));
         }
     }
 }

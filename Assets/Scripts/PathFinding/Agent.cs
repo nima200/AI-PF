@@ -15,13 +15,13 @@ public class Agent : MonoBehaviour
 	    if (Input.GetKeyDown(KeyCode.F1))
 	    {
             ResetPath();
-	        PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound);
+	        PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
 	    }
-	    if (Input.GetKeyDown(KeyCode.F2))
-	    {
-            ResetPath();
-	        PathRequestManager.RequestPath(transform.position, Target2.position, OnPathFound);
-	    }
+//	    if (Input.GetKeyDown(KeyCode.F2))
+//	    {
+//            ResetPath();
+//	        PathRequestManager.RequestPath(transform.position, Target2.position, OnPathFound);
+//	    }
 	    if (Input.GetKeyDown(KeyCode.F3))
 	    {
 	        StopPath();
@@ -84,7 +84,7 @@ public class Agent : MonoBehaviour
         for (int i = _waypointIndex; i < Path.Length; i++)
         {
             Gizmos.color = Color.black;
-            Gizmos.DrawCube(Path[i], Vector3.one);
+            Gizmos.DrawCube(Path[i], Vector3.one * 2);
         }
     }
 }
