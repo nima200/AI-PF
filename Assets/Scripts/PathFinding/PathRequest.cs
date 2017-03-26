@@ -6,13 +6,13 @@ public struct PathRequest
     public Vector3 PathStart;
     public Vector3 PathEnd;
     public Action<Vector3[], bool> CallBack;
-    public Agent Caller;
+    public Agent RequestAgent;
 
-    public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callBack, Agent caller)
+    public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callBack, Agent requestAgent)
     {
         PathStart = pathStart;
         PathEnd = pathEnd;
         CallBack = callBack;
-        Caller = caller;
+        RequestAgent = requestAgent;
     }
 }

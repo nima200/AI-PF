@@ -8,7 +8,7 @@ public class AStar : MonoBehaviour
 {
     private PathRequestManager _requestManager;
     private Grid _grid;
-    private Dictionary<string, Agent> _reservationTable = new Dictionary<string, Agent>();
+//    private Dictionary<string, Agent> _reservationTable = new Dictionary<string, Agent>();
 
     private void Awake()
     {
@@ -16,69 +16,67 @@ public class AStar : MonoBehaviour
         _requestManager = GetComponent<PathRequestManager>();
     }
 
-    private IEnumerator FindPath(Vector3 start, Vector3 target, Agent caller)
+    private IEnumerator FindPath(Vector3 start, Vector3 target, Agent agent)
     {
 
         var waypoints = new Vector3[0];
         bool foundPath = false;
 
         // Convert the two start and end positions into actual nodes.
-        var startNode = _grid.NodeFromWorldPoint(start, 0);
-        var targetNode = _grid.NodeFromWorldPoint(target, 0);
+        var startCell = _grid.CellFromWorldPoint(start);
+        var targetCell = _grid.CellFromWorldPoint(target);
 
 
         // The sets
-        if (startNode.Walkable)
+        if (startCell.GenericNode.Walkable)
         {
-            var openSet = new List<Node>();
-            var closedSet = new HashSet<Node>();
+            var openSet = new List<Cell>();
+            var closedSet = new HashSet<Cell>();
 
-            openSet.Add(startNode);
+            openSet.Add(startCell);
             int time = 0;
             while (openSet.Count > 0)
             {
 
                 // currentnode = node with lowest FCost. This is added to the path.
-                var currentNode = openSet[0];
+                var currentCell = openSet[0];
                 for (int i = 1; i < openSet.Count; i++)
                 {
-                    if (openSet[i].FCost < currentNode.FCost || openSet[i].FCost == currentNode.FCost)
+                    if (openSet[i].GenericNode.FCost < currentCell.GenericNode.FCost || openSet[i].GenericNode.FCost == currentCell.GenericNode.FCost)
                     {
-                        if (openSet[i].HCost < currentNode.HCost)
-                            currentNode = openSet[i];
+                        if (openSet[i].GenericNode.HCost < currentCell.GenericNode.HCost)
+                            currentCell = openSet[i];
                     }
                 }
 
-                openSet.Remove(currentNode);
-                closedSet.Add(currentNode);
+                openSet.Remove(currentCell);
+                closedSet.Add(currentCell);
+                // Reserve the current cell at the current time and at the next time step => (to prevent head-head collision)
+                currentCell.Reserve(agent, time);
+                currentCell.Reserve(agent, time + 1);
 
                 // If this succeeds, it means path is found.
-                if (currentNode.X == targetNode.X && currentNode.Y == targetNode.Y)
+                if (currentCell.X == targetCell.X && currentCell.Y == targetCell.Y)
                 {
-                    targetNode = _grid.NodeFromWorldPoint(target, time);
+                    targetCell = _grid.CellFromWorldPoint(target);
                     foundPath = true;
                     break;
                 }
 
-                foreach (var neighbor in _grid.GetNeighbors(currentNode, time))
+                foreach (var neighbor in _grid.GetNeighbors(currentCell))
                 {
-                    string key = neighbor.X + ":" + neighbor.Y + ":" + neighbor.T;
-                    if (!neighbor.Walkable || closedSet.Contains(neighbor) || _reservationTable.ContainsKey(key)) continue;
+                    if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1)) continue;
 
-                    int newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
-                    if (newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
+                    int newMovementCostToNeighbor = currentCell.GenericNode.GCost + GetDistance(currentCell, neighbor);
+                    if (newMovementCostToNeighbor < neighbor.GenericNode.GCost || !openSet.Contains(neighbor))
                     {
-                        neighbor.GCost = newMovementCostToNeighbor;
-                        neighbor.HCost = GetDistance(neighbor, targetNode);
-                        neighbor.Parent = currentNode;
+                        neighbor.SetGCost(newMovementCostToNeighbor);
+                        neighbor.SetHCost(GetDistance(neighbor, targetCell));
+                        neighbor.SetParent(currentCell.GenericNode);
                         if (!openSet.Contains(neighbor))
                         {
                             openSet.Add(neighbor);
                         }
-//                        else
-//                        {
-//                            openSet.UpdateItem(neighbor);
-//                        }
                     }
                 }
                 time++;
@@ -92,27 +90,23 @@ public class AStar : MonoBehaviour
         if (foundPath)
         {
             // Attempt to retrace the path back if the path was actually found
-            waypoints = RetracePath(startNode, targetNode, caller);
+            waypoints = RetracePath(startCell, targetCell);
         }
         // Alert the Path Request Manager that the path finding was completed 
         // and hand over the path and result of pathfinding.
         _requestManager.FinishedProcessingPath(waypoints, foundPath);
     }
 
-    private Vector3[] RetracePath(Node startNode, Node endNode, Agent caller)
+    private static Vector3[] RetracePath(Cell startCell, Cell endCell)
     {
         var path = new List<Node>();
-        var currentNode = endNode;
-        string key = currentNode.X + ":" + currentNode.Y + ":" + currentNode.T;
-        _reservationTable.Add(key, caller);
-        while (currentNode != startNode)
+        var currentCell = endCell.GenericNode;
+        while (currentCell != startCell.GenericNode)
         {
-            path.Add(currentNode);
-            currentNode = currentNode.Parent;
-            key = currentNode.X + ":" + currentNode.Y + ":" + currentNode.T;
-            _reservationTable.Add(key, caller);
+            path.Add(currentCell);
+            currentCell = currentCell.Parent;
         }
-        var waypoints = NodesToVector3s(path);
+        var waypoints = NodesToVector3S(path);
         Array.Reverse(waypoints);
         return waypoints;
     }
@@ -133,12 +127,12 @@ public class AStar : MonoBehaviour
         return waypoints.ToArray();
     }
 
-    private Vector3[] NodesToVector3s(IEnumerable<Node> path)
+    private static Vector3[] NodesToVector3S(IEnumerable<Node> path)
     {
         return path.Select(node => node.WorldPosition).ToArray();
     }
 
-    private int GetDistance(Node a, Node b)
+    private static int GetDistance(Cell a, Cell b)
     {
         int distanceX = Mathf.Abs(a.X - b.X);
         int distanceY = Mathf.Abs(a.Y - b.Y);
@@ -150,8 +144,8 @@ public class AStar : MonoBehaviour
         return 14 * distanceX + 10 * (distanceY * distanceX);
     }
 
-    public void StartFindPath(Vector3 startPosition, Vector3 targetPosition, Agent caller)
+    public void StartFindPath(Vector3 startPosition, Vector3 targetPosition, Agent agent)
     {
-        StartCoroutine(FindPath(startPosition, targetPosition, caller));
+        StartCoroutine(FindPath(startPosition, targetPosition, agent));
     }
 }

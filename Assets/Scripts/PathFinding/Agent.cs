@@ -9,7 +9,13 @@ public class Agent : MonoBehaviour
     public Transform Target2;
     [Range(1, 50)]
     public float Speed = 5;
-    private int _waypointIndex;
+    public int _waypointIndex;
+    private Grid _grid;
+
+    private void Awake()
+    {
+        _grid = GameObject.Find("A*").GetComponent<Grid>();
+    }
 
 	private void Update () {
 	    if (Input.GetKeyDown(KeyCode.F1))
@@ -63,6 +69,13 @@ public class Agent : MonoBehaviour
             var currentWaypoint = Path[0];
             while (true)
             {
+                if (Path.Length > _grid.TimeStepWindow && _waypointIndex == _grid.TimeStepWindow)
+                {
+                    _grid.ResetGridReservations(this);
+                    ResetPath();
+                    PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
+                    yield break;
+                }
                 if (transform.position == currentWaypoint)
                 {
                     _waypointIndex++;
@@ -73,9 +86,11 @@ public class Agent : MonoBehaviour
                     }
                     currentWaypoint = Path[_waypointIndex];
                 }
+//                transform.position = currentWaypoint;
                 transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
                 yield return null;
-            }        }
+            }
+        }
     }
 
     public void OnDrawGizmos()
