@@ -3,12 +3,31 @@ using UnityEngine;
 
 public abstract class BehaviorNode
 {
-    protected BehaviorResult Result;
-    // Empty constructor made by compiler
-    public abstract BehaviorResult Tick();
+    public bool Initialized;
+    public BehaviorResult Result { get; protected set; }
+    
+    public virtual BehaviorResult Process()
+    {
+        throw new NotImplementedException();   
+    }
+
+    public virtual void Initialize()
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual void Reset()
+    {
+        Initialized = false;
+    }
 
     protected void Print(string s)
     {
         Debug.Log(s);
+    }
+
+    public virtual void SetProf(string professorName)
+    {
+        throw new NotImplementedException();
     }
 }

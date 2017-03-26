@@ -1,40 +1,27 @@
-﻿using System;
-
-public class InverterNode : BehaviorNode
+﻿public class InverterNode : DecoratorNode
 {
-    protected BehaviorNode Behavior;
+    public InverterNode(BehaviorNode childNode) : base(childNode) { }
 
-    public InverterNode(BehaviorNode behavior)
+    public override BehaviorResult Process()
     {
-        Behavior = behavior;
-    }
-
-    public override BehaviorResult Tick()
-    {
-        try
+        // ReSharper disable once SwitchStatementMissingSomeCases
+        // Default behavior comes from child's default
+        switch (ChildNode.Process())
         {
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            // Do not have a default behavior for an inverter. It comes from the child.
-            switch (Behavior.Tick())
-            {
-                case BehaviorResult.Failure:
-                    Result = BehaviorResult.Success;
-                    return Result;
-                case BehaviorResult.Success:
-                    Result = BehaviorResult.Failure;
-                    return Result;
-                case BehaviorResult.Running:
-                    Result = BehaviorResult.Running;
-                    return Result;
-            }
+            case BehaviorResult.FAIL:
+                Print("Child failed. SUCCESS.");
+                Result = BehaviorResult.SUCCESS;
+                return Result;
+            case BehaviorResult.SUCCESS:
+                Print("Child succeeded. FAIL.");
+                Result = BehaviorResult.FAIL;
+                return Result;
+            case BehaviorResult.RUNNING:
+                Print("Child running. RUNNING.");
+                Result = BehaviorResult.RUNNING;
+                return Result;
         }
-        catch (Exception exception)
-        {
-            Print(exception.ToString());
-            Result = BehaviorResult.Success;
-            return Result;
-        }
-        Result = BehaviorResult.Success;
+        Result = BehaviorResult.SUCCESS;
         return Result;
     }
 }

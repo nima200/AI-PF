@@ -1,48 +1,56 @@
-﻿using System;
-
-public class SequenceNode : BehaviorNode
+﻿public class SequenceNode : CompositeNode
 {
-    protected BehaviorNode[] BehaviorNodes;
-
-    public SequenceNode(params BehaviorNode[] behaviorNodes)
+    public override void Initialize()
     {
-        BehaviorNodes = behaviorNodes;
+        for (int i = 0; i < ChildrenNodes.Count - 1; i++)
+        {
+            var child = ChildrenNodes[i];
+            var nextChild = ChildrenNodes[i + 1];
+            if (child.Initialized && child.Result == BehaviorResult.SUCCESS)
+            {
+                nextChild.Initialize();
+                break;
+            }
+            child.Initialize();
+        }
     }
 
-    public override BehaviorResult Tick()
+    public override void SetProf(string professorName)
     {
-        bool runningChild = false;
-        foreach (var node in BehaviorNodes)
+        Professor = professorName;
+        foreach (var node in ChildrenNodes)
         {
-            try
-            {
-                switch (node.Tick())
-                {
-                    // If one child failed, return failure
-                    case BehaviorResult.Failure:
-                        Result = BehaviorResult.Failure;
-                        return Result;
-                    // If checked child succeeded try to keep going
-                    case BehaviorResult.Success:
-                        continue;
-                    // If child is running, take account of it and keep going. We'll come back to this later.
-                    case BehaviorResult.Running:
-                        runningChild = true;
-                        continue;
-                    default:
-                        Result = BehaviorResult.Success;
-                        return Result;
-                }
-            }
-            catch (Exception exception)
-            {
-                Print(exception.ToString());
-                Result = BehaviorResult.Failure;
-                return Result;
-            }
+            node.SetProf(professorName);
         }
-        // If there was a running child, return running, else all succeeded so return true
-        Result = runningChild ? BehaviorResult.Running : BehaviorResult.Success;
-        return Result;
+    }
+
+    /// <summary>
+    /// Attempts to proccess every child. If any fails, this fails. If all succeed it succeeds.
+    /// If end is reached but a child was running in the check, then it returns running.
+    /// </summary>
+    /// <returns>The behavior result</returns>
+    public override BehaviorResult Process()
+    {
+                bool childRunning = false;
+                foreach (var node in ChildrenNodes)
+                {
+                    switch (node.Process())
+                    {
+                        case BehaviorResult.FAIL:
+                            Print("A child failed. FAIL.");
+                            Result = BehaviorResult.FAIL;
+                            return Result;
+                        case BehaviorResult.SUCCESS:
+                            continue;
+                        case BehaviorResult.RUNNING:
+                            childRunning = true;
+                            continue;
+                        default:
+                            Result = BehaviorResult.SUCCESS;
+                            return Result;
+                    }
+                }
+                Result = childRunning ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+                return Result;
     }
 }

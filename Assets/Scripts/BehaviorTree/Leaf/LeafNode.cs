@@ -1,3 +1,3 @@
-﻿public abstract class LeafNode : BehaviorNode {
-
+﻿public abstract class LeafNode : BehaviorNode
+{
 }
