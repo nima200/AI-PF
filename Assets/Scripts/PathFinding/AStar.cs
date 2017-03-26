@@ -141,6 +141,10 @@ public class AStar : MonoBehaviour
         {
             return 14 * distanceY + 10 * (distanceX - distanceY);
         }
+        if (distanceX == 0 && distanceY == 0)
+        {
+            return 14;
+        }
         return 14 * distanceX + 10 * (distanceY * distanceX);
     }
 
