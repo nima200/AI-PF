@@ -1,7 +1,5 @@
 ﻿public class GetAdvice : LeafNode
 {
-    public string Professor;
-    public bool FinishedTalking { get; set; }
 
     public override void Initialize()
     {
@@ -12,17 +10,17 @@
     public override void Reset()
     {
         base.Reset();
-        FinishedTalking = false;
+        Agent.FinishedTalking = false;
     }
 
     public override BehaviorResult Process()
     {
-        Result = !FinishedTalking ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        if (Agent.FinishedTalking)
+        {
+            Result = BehaviorResult.SUCCESS;
+            return Result;
+        }
+        Result = BehaviorResult.RUNNING;
         return Result;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }

@@ -15,12 +15,21 @@
         }
     }
 
-    public override void SetProf(string professorName)
+    public override void SetProf(Professor professor)
     {
-        Professor = professorName;
+        Professor = professor;
         foreach (var node in ChildrenNodes)
         {
-            node.SetProf(professorName);
+            node.SetProf(professor);
+        }
+    }
+
+    public override void SetAgent(Agent agent)
+    {
+        Agent = agent;
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetAgent(agent);
         }
     }
 

@@ -18,8 +18,7 @@ public class RandomSelector : CompositeNode
             switch (randomChild.Process())
             {
                 case BehaviorResult.FAIL:
-                    Result = BehaviorResult.FAIL;
-                    return Result;
+                    break;
                 case BehaviorResult.SUCCESS:
                     Print("Random selector succeeded");
                     Result = BehaviorResult.SUCCESS;
@@ -47,11 +46,27 @@ public class RandomSelector : CompositeNode
         }
     }
 
-    public override void SetProf(string professorName)
+    public override void SetProf(Professor professor)
     {
         foreach (var node in ChildrenNodes)
         {
-            node.SetProf(professorName);
+            node.SetProf(professor);
+        }
+    }
+
+    public override void SetProfPlaque(Plaque plaque)
+    {
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetProfPlaque(ProfessorPlaque);
+        }
+    }
+
+    public override void SetAgent(Agent agent)
+    {
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetAgent(agent);
         }
     }
 }

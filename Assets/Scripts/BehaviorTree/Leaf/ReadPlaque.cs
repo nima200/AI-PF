@@ -1,6 +1,5 @@
 ﻿public class ReadPlaque : LeafNode
 {
-    public string Professor;
     public bool DoneReading { get; set; }
     public bool AdjacentToPlaque { get; set; }
 
@@ -19,12 +18,9 @@
 
     public override BehaviorResult Process()
     {
-        Result = !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+        Result = !DoneReading
+            ? BehaviorResult.RUNNING
+            : (Professor == Agent.TargetProfessor ? BehaviorResult.SUCCESS : BehaviorResult.FAIL);
         return Result;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }

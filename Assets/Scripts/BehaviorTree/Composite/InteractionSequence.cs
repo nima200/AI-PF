@@ -6,6 +6,8 @@ public class InteractionSequence : SequenceNode
         foreach (var childrenNode in ChildrenNodes)
         {
             childrenNode.SetProf(Professor);
+            childrenNode.SetProfPlaque(ProfessorPlaque);
+            childrenNode.SetAgent(Agent);
         }
     }
 

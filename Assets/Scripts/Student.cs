@@ -8,7 +8,7 @@ public class Student : MonoBehaviour
 {
     public List<Professor> AllProfessors { get; set; }
     public Professor NextProfessor { get; set; }
-    public MyQueue<Professor> PreviousProfessors = new MyQueue<Professor>();
+    public CappedQueue<Professor> PreviousProfessors = new CappedQueue<Professor>();
     [SerializeField]
     private StudentState _myState = StudentState.Idle;
     public StudentState MyState

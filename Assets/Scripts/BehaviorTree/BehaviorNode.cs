@@ -4,6 +4,9 @@ using UnityEngine;
 public abstract class BehaviorNode
 {
     public bool Initialized;
+    public Professor Professor;
+    public Plaque ProfessorPlaque;
+    public Agent Agent;
     public BehaviorResult Result { get; protected set; }
     
     public virtual BehaviorResult Process()
@@ -26,8 +29,18 @@ public abstract class BehaviorNode
         Debug.Log(s);
     }
 
-    public virtual void SetProf(string professorName)
+    public virtual void SetProf(Professor professor)
     {
-        throw new NotImplementedException();
+        Professor = professor;
+    }
+
+    public virtual void SetProfPlaque(Plaque plaque)
+    {
+        ProfessorPlaque = plaque;
+    }
+
+    public virtual void SetAgent(Agent agent)
+    {
+        Agent = agent;
     }
 }

@@ -8,21 +8,32 @@ public class ActionManager : MonoBehaviour
 
     public void Talk(GetAdvice advice)
     {
-        print("Trying to talk to: " + advice.Professor);
+        print("Trying to talk to: " + advice.Professor.Name);
+        advice.Agent.RequestPath(advice.Professor.gameObject.transform);
         StartCoroutine(GetAdvice(advice));
     }
 
 
     public IEnumerator GetAdvice(GetAdvice advice)
     {
-        yield return new WaitForSecondsRealtime(2f);
-        advice.FinishedTalking = true;
-        print("Got advice from: " + advice.Professor);
+        while (!advice.Agent.FinishedTalking)
+        {
+            if (advice.Agent.Target == advice.Agent.TargetProfessor.transform && advice.Agent.ReachedTarget)
+            {
+                yield return new WaitForSeconds(1f);
+                advice.Agent.FinishedTalking = true;
+                advice.Agent.ChangeTargetProfessor(
+                    advice.Agent.GetComponent<Behavior>().Professors[
+                        Random.Range(0, advice.Agent.GetComponent<Behavior>().Professors.Count)]);
+                print("Got advice from: " + advice.Professor.Name);
+            }
+            yield return null;
+        }
     }
 
     public void Read(ReadPlaque plaque)
     {
-        print("Reading: " + plaque.Professor + "'s plaque");
+        print("Reading: " + plaque.Professor.Name + "'s plaque");
         plaque.AdjacentToPlaque = true;
         StartCoroutine(ReadPlaque(plaque));
     }
@@ -31,20 +42,13 @@ public class ActionManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(1f);
         read.DoneReading = true;
-        print("Done reading " + read.Professor + "'s plaque");
+        print("Done reading " + read.Professor.Name + "'s plaque");
     }
 
-    public void FindProfessor(FindProf findProf)
+    public void FindProfessorPlaque(FindProf findProf)
     {
-        print("Searching for professor: " + findProf.Professor);
-        StartCoroutine(FindPath(findProf));
-    }
-
-    public IEnumerator FindPath(FindProf findProf)
-    {
-        yield return new WaitForSecondsRealtime(4f);
-        findProf.FoundProfessorPlaque = true;
-        print("Found professor: " + findProf.Professor);
+        print("Searching for professor: " + findProf.Professor.Name);
+        findProf.Agent.RequestPath(findProf.ProfessorPlaque.gameObject.transform);
     }
 
     public void GoIdle(Idle idle)
