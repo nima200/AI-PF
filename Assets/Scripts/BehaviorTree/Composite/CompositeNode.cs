@@ -3,7 +3,6 @@
 public abstract class CompositeNode : BehaviorNode
 {
     protected List<BehaviorNode> ChildrenNodes;
-    public string Professor;
     protected CompositeNode()
     {
         ChildrenNodes = new List<BehaviorNode>();
@@ -31,11 +30,21 @@ public abstract class CompositeNode : BehaviorNode
         }
     }
 
-    public override void SetProf(string professorName)
+    public override void SetProf(Professor professor)
     {
+        Professor = professor;
         foreach (var node in ChildrenNodes)
         {
-            node.SetProf(professorName);
+            node.SetProf(professor);
+        }
+    }
+
+    public override void SetPlaque(Plaque plaque)
+    {
+        Plaque = plaque;
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetPlaque(plaque);
         }
     }
 }

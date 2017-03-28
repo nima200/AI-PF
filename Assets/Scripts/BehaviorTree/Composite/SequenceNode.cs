@@ -15,15 +15,6 @@
         }
     }
 
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
-        foreach (var node in ChildrenNodes)
-        {
-            node.SetProf(professorName);
-        }
-    }
-
     /// <summary>
     /// Attempts to proccess every child. If any fails, this fails. If all succeed it succeeds.
     /// If end is reached but a child was running in the check, then it returns running.

@@ -2,7 +2,6 @@
 
 public class Idle : LeafNode
 {
-    public string Professor;
     public bool FinishedIdle { get; set; }
 
     public override void Initialize()
@@ -31,10 +30,5 @@ public class Idle : LeafNode
     {
         base.Reset();
         FinishedIdle = false;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }

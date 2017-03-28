@@ -6,15 +6,11 @@ public class BehaviorTests : MonoBehaviour
     public ActionManager ActionManagerPrefab;
     private BehaviorResult _myresult = BehaviorResult.FAIL;
     private BehaviorTree _myTree;
+    public List<Professor> Professors;
+    public List<Plaque> Plaques;
 	private void Awake ()
 	{
 	    Instantiate(ActionManagerPrefab);
-        var profNameList = new List<string>()
-        {
-            "Paul Kry",
-            "Clark",
-            "Prakash"
-        };
         
         var paulKryFind = new FindProf();
         var paulKryPlaque = new ReadPlaque();
@@ -52,7 +48,7 @@ public class BehaviorTests : MonoBehaviour
         prakashAdviceSequence.Add(prakashInteraction);
         prakashAdviceSequence.Add(prakashIdle);
 
-        var randomprofs = new RandomProfSelector(profNameList);
+        var randomprofs = new RandomProfSelector(Professors, Plaques);
 
         randomprofs.Add(paulKryAdviceSequence);
         randomprofs.Add(clarkAdviceSequence);

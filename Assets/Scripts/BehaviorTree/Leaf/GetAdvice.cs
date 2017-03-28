@@ -1,6 +1,5 @@
 ﻿public class GetAdvice : LeafNode
 {
-    public string Professor;
     public bool FinishedTalking { get; set; }
 
     public override void Initialize()
@@ -19,10 +18,5 @@
     {
         Result = !FinishedTalking ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
         return Result;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }

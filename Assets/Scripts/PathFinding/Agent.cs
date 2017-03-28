@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
+    [HideInInspector]
     public Vector3[] Path;
     public Transform Target;
-    public Transform Target2;
     [Range(1, 50)]
     public float Speed = 5;
-    public int _waypointIndex;
+    private int _waypointIndex;
     private Grid _grid;
+    
+    public List<Plaque> Plaques;
+    public List<Professor> Professors { get; set; }
 
     private void Awake()
     {
         _grid = GameObject.Find("A*").GetComponent<Grid>();
+        Professors = new List<Professor>(Plaques.Count);
+        foreach (var p in Plaques)
+        {
+            Professors.Add(p.Professor);
+        }
     }
 
 	private void Update () {
@@ -23,11 +31,6 @@ public class Agent : MonoBehaviour
             ResetPath();
 	        PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
 	    }
-//	    if (Input.GetKeyDown(KeyCode.F2))
-//	    {
-//            ResetPath();
-//	        PathRequestManager.RequestPath(transform.position, Target2.position, OnPathFound);
-//	    }
 	    if (Input.GetKeyDown(KeyCode.F3))
 	    {
 	        StopPath();

@@ -3,10 +3,6 @@ public class InteractionSequence : SequenceNode
     public override void Initialize()
     {
         Initialized = true;
-        foreach (var childrenNode in ChildrenNodes)
-        {
-            childrenNode.SetProf(Professor);
-        }
     }
 
     /// <summary>

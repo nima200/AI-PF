@@ -5,6 +5,8 @@ public abstract class BehaviorNode
 {
     public bool Initialized;
     public BehaviorResult Result { get; protected set; }
+    public Professor Professor;
+    public Plaque Plaque;
     
     public virtual BehaviorResult Process()
     {
@@ -26,8 +28,13 @@ public abstract class BehaviorNode
         Debug.Log(s);
     }
 
-    public virtual void SetProf(string professorName)
+    public virtual void SetProf(Professor professor)
     {
-        throw new NotImplementedException();
+        Professor = professor;
+    }
+
+    public virtual void SetPlaque(Plaque plaque)
+    {
+        Plaque = plaque;
     }
 }

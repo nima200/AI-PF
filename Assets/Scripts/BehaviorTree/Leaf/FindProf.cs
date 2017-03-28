@@ -1,6 +1,5 @@
 ﻿public class FindProf : LeafNode
 {
-    public string Professor;
     public bool FoundProfessorPlaque { get; set; }
 
     public override void Initialize()
@@ -19,10 +18,5 @@
     {
         base.Reset();
         FoundProfessorPlaque = false;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }

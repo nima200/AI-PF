@@ -2,17 +2,20 @@
 
 public class RandomProfSelector : RandomSelector
 {
-    public List<string> ProfessorNames;
-    public RandomProfSelector(List<string> professorNames)
+    public List<Professor> Professors;
+    public List<Plaque> Plaques;
+    public RandomProfSelector(List<Professor> professors, List<Plaque> plaques)
     {
-        ProfessorNames = professorNames;
+        Professors = professors;
+        Plaques = plaques;
     }
 
     public override void Initialize()
     {
-        for (int i = 0; i < ProfessorNames.Count; i++)
+        for (int i = 0; i < Professors.Count; i++)
         {
-            ChildrenNodes[i].SetProf(ProfessorNames[i]);
+            ChildrenNodes[i].SetProf(Professors[i]);
+            ChildrenNodes[i].SetPlaque(Plaques[i]);
             ChildrenNodes[i].Initialize();
         }
     }

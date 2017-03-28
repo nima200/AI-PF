@@ -1,6 +1,5 @@
 ﻿public class ReadPlaque : LeafNode
 {
-    public string Professor;
     public bool DoneReading { get; set; }
     public bool AdjacentToPlaque { get; set; }
 
@@ -21,10 +20,5 @@
     {
         Result = !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
         return Result;
-    }
-
-    public override void SetProf(string professorName)
-    {
-        Professor = professorName;
     }
 }
