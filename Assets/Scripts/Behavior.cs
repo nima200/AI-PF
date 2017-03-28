@@ -1,16 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BehaviorTests : MonoBehaviour
+public class Behavior : MonoBehaviour
 {
     public ActionManager ActionManagerPrefab;
     private BehaviorResult _myresult = BehaviorResult.FAIL;
     private BehaviorTree _myTree;
     public List<Professor> Professors;
     public List<Plaque> Plaques;
-	private void Awake ()
+    public Agent Agent;
+	private void Start ()
 	{
-	    Instantiate(ActionManagerPrefab);
+        Agent = GetComponent<Agent>();
+        Plaques = Agent.Plaques;
+        Professors = Agent.Professors;
+	    
+
+        Instantiate(ActionManagerPrefab);
         
         var paulKryFind = new FindProf();
         var paulKryPlaque = new ReadPlaque();
@@ -48,11 +54,50 @@ public class BehaviorTests : MonoBehaviour
         prakashAdviceSequence.Add(prakashInteraction);
         prakashAdviceSequence.Add(prakashIdle);
 
-        var randomprofs = new RandomProfSelector(Professors, Plaques);
+        var kimFind = new FindProf();
+        var kimPlaque = new ReadPlaque();
+	    var kimAdvice = new GetAdvice();
+        var kimInteraction = new InteractionSequence();
+        kimInteraction.Add(kimFind);
+        kimInteraction.Add(kimPlaque);
+        kimInteraction.Add(kimAdvice);
+	    var kimIdle = new Idle();
+        var kimAdviceSequence = new InteractionSequence();
+        kimAdviceSequence.Add(kimInteraction);
+        kimAdviceSequence.Add(kimIdle);
+
+        var futureFind = new FindProf();
+        var futurePlaque = new ReadPlaque();
+        var futureAdvice = new GetAdvice();
+        var futureInteraction = new InteractionSequence();
+        futureInteraction.Add(futureFind);
+        futureInteraction.Add(futurePlaque);
+        futureInteraction.Add(futureAdvice);
+	    var futureIdle = new Idle();
+        var futureAdviceSequence = new InteractionSequence();
+        futureAdviceSequence.Add(futureInteraction);
+        futureAdviceSequence.Add(futureIdle);
+
+        var drakeFind = new FindProf();
+        var drakePlaque = new ReadPlaque();
+        var drakeAdvice = new GetAdvice();
+        var drakeInteraction = new InteractionSequence();
+        drakeInteraction.Add(drakeFind);
+        drakeInteraction.Add(drakePlaque);
+        drakeInteraction.Add(drakeAdvice);
+	    var drakeIdle = new Idle();
+        var drakeAdviceSequence = new InteractionSequence();
+        drakeAdviceSequence.Add(drakeInteraction);
+        drakeAdviceSequence.Add(drakeIdle);
+
+        var randomprofs = new RandomProfSelector(Professors, Plaques, Agent);
 
         randomprofs.Add(paulKryAdviceSequence);
         randomprofs.Add(clarkAdviceSequence);
         randomprofs.Add(prakashAdviceSequence);
+        randomprofs.Add(kimAdviceSequence);
+        randomprofs.Add(futureAdviceSequence);
+        randomprofs.Add(drakeAdviceSequence);
 
         _myTree = new BehaviorTree(randomprofs);
         _myTree.InitializeTree();

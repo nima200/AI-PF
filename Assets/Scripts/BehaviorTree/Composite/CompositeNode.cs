@@ -47,4 +47,13 @@ public abstract class CompositeNode : BehaviorNode
             node.SetPlaque(plaque);
         }
     }
+
+    public override void SetAgent(Agent agent)
+    {
+        base.SetAgent(agent);
+        foreach (var node in ChildrenNodes)
+        {
+            node.SetAgent(agent);
+        }
+    }
 }

@@ -4,10 +4,11 @@ public class RandomProfSelector : RandomSelector
 {
     public List<Professor> Professors;
     public List<Plaque> Plaques;
-    public RandomProfSelector(List<Professor> professors, List<Plaque> plaques)
+    public RandomProfSelector(List<Professor> professors, List<Plaque> plaques, Agent agent)
     {
         Professors = professors;
         Plaques = plaques;
+        Agent = agent;
     }
 
     public override void Initialize()
@@ -16,6 +17,7 @@ public class RandomProfSelector : RandomSelector
         {
             ChildrenNodes[i].SetProf(Professors[i]);
             ChildrenNodes[i].SetPlaque(Plaques[i]);
+            ChildrenNodes[i].SetAgent(Agent);
             ChildrenNodes[i].Initialize();
         }
     }

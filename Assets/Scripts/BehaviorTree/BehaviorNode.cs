@@ -7,7 +7,7 @@ public abstract class BehaviorNode
     public BehaviorResult Result { get; protected set; }
     public Professor Professor;
     public Plaque Plaque;
-    
+    public Agent Agent;
     public virtual BehaviorResult Process()
     {
         throw new NotImplementedException();   
@@ -36,5 +36,10 @@ public abstract class BehaviorNode
     public virtual void SetPlaque(Plaque plaque)
     {
         Plaque = plaque;
+    }
+
+    public virtual void SetAgent(Agent agent)
+    {
+        Agent = agent;
     }
 }
