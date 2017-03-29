@@ -22,7 +22,6 @@ public class Agent : MonoBehaviour
     public List<Professor> Professors { get; set; }
     [HideInInspector]
     public bool ReachedTarget;
-    public List<Agent> OtherStudents = new List<Agent>();
 
     private void Awake()
     {
@@ -34,24 +33,6 @@ public class Agent : MonoBehaviour
         }
         TargetProfessor = Professors[Random.Range(0, Professors.Count)];
     }
-
-    private void Start()
-    {
-        OtherStudents = FindObjectsOfType<Agent>().ToList();
-        OtherStudents.Remove(this);
-    }
-
-	private void Update () {
-	    if (Input.GetKeyDown(KeyCode.F1))
-	    {
-            ResetPath();
-	        PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
-	    }
-	    if (Input.GetKeyDown(KeyCode.F3))
-	    {
-	        StopPath();
-	    }
-	}
 
     private void ResetPath()
     {
@@ -115,7 +96,10 @@ public class Agent : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Function used by other classes to make the agent request a path from the path request manager.
+    /// </summary>
+    /// <param name="target">The transform of the location to send the agent to</param>
     public void RequestPath(Transform target)
     {
         Target = target;
@@ -124,6 +108,10 @@ public class Agent : MonoBehaviour
         PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
     }
 
+    /// <summary>
+    /// Method that is used by the GetAdvice leaf to make the agent get another random professor as the new target.
+    /// It makes sure that the previous and current random professor are not the same.
+    /// </summary>
     public void GetRandomProf()
     {
         PreviousProfessor = TargetProfessor;

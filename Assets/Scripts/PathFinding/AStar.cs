@@ -26,7 +26,7 @@ public class AStar : MonoBehaviour
         var targetCell = _grid.CellFromWorldPoint(target);
 
 
-        // The sets
+            // The sets
             var openSet = new List<Cell>();
             var closedSet = new HashSet<Cell>();
 
@@ -61,6 +61,7 @@ public class AStar : MonoBehaviour
                     break;
                 }
 
+                // Check all neighbors and get the one with the lowest FCost to be the next node to include in the path.
                 foreach (var neighbor in _grid.GetNeighbors(currentCell))
                 {
                     if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1) || neighbor.IsReserved(time)) continue;
@@ -75,15 +76,14 @@ public class AStar : MonoBehaviour
                         {
                             openSet.Add(neighbor);
                         }
+                        else
+                        {
+                            openSet[openSet.IndexOf(neighbor)] = neighbor;
+                        }
                     }
                 }
                 time++;
             }
-//        }
-//        else
-//        {
-//            print("Path finding is not possible as either the start or end node are not walkable.");
-//        }
         yield return null;
         if (foundPath)
         {
@@ -95,6 +95,13 @@ public class AStar : MonoBehaviour
         _requestManager.FinishedProcessingPath(waypoints, foundPath);
     }
 
+    /// <summary>
+    /// Method that retraces a path through the cell parents, given two parents.
+    /// Starts from the end cell (end of the path), all the way up to the start cell (start of the path)
+    /// </summary>
+    /// <param name="startCell">The start of the path</param>
+    /// <param name="endCell">The end of the path</param>
+    /// <returns></returns>
     private static Vector3[] RetracePath(Cell startCell, Cell endCell)
     {
         var path = new List<Node>();
@@ -109,11 +116,22 @@ public class AStar : MonoBehaviour
         return waypoints;
     }
 
+    /// <summary>
+    /// Static method that retrieves a node, given a world position.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
     private static Vector3[] NodesToVector3S(IEnumerable<Node> path)
     {
         return path.Select(node => node.WorldPosition).ToArray();
     }
 
+    /// <summary>
+    /// Method that gets the distance between two cells.
+    /// </summary>
+    /// <param name="a">The first cell</param>
+    /// <param name="b">The second cell</param>
+    /// <returns>Distance between the two cells given</returns>
     private static int GetDistance(Cell a, Cell b)
     {
         int distanceX = Mathf.Abs(a.X - b.X);
@@ -125,6 +143,14 @@ public class AStar : MonoBehaviour
         return 14 * distanceX + 10 * (distanceY - distanceX);
     }
 
+    /// <summary>
+    /// A wrapper method that covers the find path method. This is used to spread out the path finding requests over several frames,
+    /// so that different pathfinding requests are done on different frames, rather than having the game pause for a brief second until
+    /// all agents find their path, and only continuing once they are all done.
+    /// </summary>
+    /// <param name="startPosition">The start of the path</param>
+    /// <param name="targetPosition">The end of the path</param>
+    /// <param name="agent">The agent requesting a path to be found</param>
     public void StartFindPath(Vector3 startPosition, Vector3 targetPosition, Agent agent)
     {
         StartCoroutine(FindPath(startPosition, targetPosition, agent));

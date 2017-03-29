@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Reflection.Emit;
 
 [System.Serializable]
-public class Node : IHeapItem<Node>
+public class Node
 {
     public int X;
     public int Y;
@@ -12,20 +12,11 @@ public class Node : IHeapItem<Node>
     public Vector3 WorldPosition;
     public int GCost;
     public int HCost;
-    
-    private int _heapIndex;
-    public int HeapIndex
-    {
-        get { return _heapIndex; }
-        set { _heapIndex = value; }
-    }
 
     public int FCost
     {
         get { return GCost + HCost; }
     }
-
-    
 
     public Node(bool walkable, Vector3 worldPosition, int x, int y)
     {

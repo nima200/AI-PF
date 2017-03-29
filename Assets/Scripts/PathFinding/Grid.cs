@@ -22,7 +22,10 @@ public class Grid : MonoBehaviour
         _sizeY = Mathf.RoundToInt(GridWorldSize.y / _nodeDiameter);
         CreateGrid();
     }
-
+    /// <summary>
+    /// Creates a 2D grid of cells. Evaluates whether a cell can be marked as walkable or not depending on whether
+    /// there is an object of layer "unwalkable mask" over the cell (using Physics.CheckSphere).
+    /// </summary>
     private void CreateGrid()
     {
         Cells = new Cell[_sizeX,_sizeY];
@@ -40,7 +43,11 @@ public class Grid : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Retreives a cell given a world position.
+    /// </summary>
+    /// <param name="worldPosition">The position to fetch a cell from.</param>
+    /// <returns>The cell at the given position.</returns>
     public Cell CellFromWorldPoint(Vector3 worldPosition)
     {
         float percentX = (worldPosition.x + GridWorldSize.x / 2) / GridWorldSize.x;
@@ -53,6 +60,13 @@ public class Grid : MonoBehaviour
         return Cells[x, y];
     }
 
+    /// <summary>
+    /// Gets a list of the neighbors of the cell, given the neighbors are still considered in the boundaries 
+    /// of the grid. Ignores the neighbor at location 0 , 0 compared to the given cell, since that neighbor
+    /// is the cell itself.
+    /// </summary>
+    /// <param name="cell">The cell to find neighbors for.</param>
+    /// <returns>The list of neighbors of the cell.</returns>
     public List<Cell> GetNeighbors(Cell cell)
     {
         var neighbors = new List<Cell>();
@@ -76,6 +90,10 @@ public class Grid : MonoBehaviour
         return neighbors;
     }
 
+    /// <summary>
+    /// Resets the reservations of an agent over the whole grid.
+    /// </summary>
+    /// <param name="agent">The agent who's reservations should be cancelled.</param>
     public void ResetGridReservations(Agent agent)
     {
         foreach (var cell in Cells)
