@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
-public class MyQueue<T>
+public class CappedQueue<T>
 {
     public Queue<T> Q = new Queue<T>();
     public int Limit { get; set; }
+
+    public CappedQueue(int limit)
+    {
+        Limit = limit;
+    }
 
     public void Enqueue(T obj)
     {
@@ -11,5 +16,10 @@ public class MyQueue<T>
         {
             Q.Dequeue();
         }
+    }
+
+    public bool Contains(T obj)
+    {
+        return Q.Contains(obj);
     }
 }

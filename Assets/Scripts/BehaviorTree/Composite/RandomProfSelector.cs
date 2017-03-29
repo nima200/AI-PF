@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class RandomProfSelector : RandomSelector
 {
@@ -13,12 +14,12 @@ public class RandomProfSelector : RandomSelector
 
     public override void Initialize()
     {
+        base.Initialize();
         for (int i = 0; i < Professors.Count; i++)
         {
             ChildrenNodes[i].SetProf(Professors[i]);
             ChildrenNodes[i].SetPlaque(Plaques[i]);
             ChildrenNodes[i].SetAgent(Agent);
-            ChildrenNodes[i].Initialize();
         }
     }
 }

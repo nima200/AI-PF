@@ -8,22 +8,25 @@ public class ActionManager : MonoBehaviour
 
     public void Talk(GetAdvice advice)
     {
-        print("Trying to talk to: " + advice.Professor);
+        advice.Agent.RequestPath(advice.Professor.transform);
         StartCoroutine(GetAdvice(advice));
     }
 
 
     public IEnumerator GetAdvice(GetAdvice advice)
     {
-        yield return new WaitForSecondsRealtime(2f);
+        while (!advice.Agent.ReachedTarget)
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(1f);
         advice.FinishedTalking = true;
+        advice.Agent.GetRandomProf();
         print("Got advice from: " + advice.Professor);
     }
 
     public void Read(ReadPlaque plaque)
     {
-        print("Reading: " + plaque.Professor + "'s plaque");
-        plaque.AdjacentToPlaque = true;
         StartCoroutine(ReadPlaque(plaque));
     }
 
@@ -36,15 +39,7 @@ public class ActionManager : MonoBehaviour
 
     public void FindProfessor(FindProf findProf)
     {
-        print("Searching for professor: " + findProf.Professor);
-        StartCoroutine(FindPath(findProf));
-    }
-
-    public IEnumerator FindPath(FindProf findProf)
-    {
-        yield return new WaitForSecondsRealtime(4f);
-        findProf.FoundProfessorPlaque = true;
-        print("Found professor: " + findProf.Professor);
+        findProf.Agent.RequestPath(findProf.Plaque.transform);
     }
 
     public void GoIdle(Idle idle)

@@ -18,7 +18,21 @@
 
     public override BehaviorResult Process()
     {
-        Result = !DoneReading ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
-        return Result;
+        switch (DoneReading)
+        {
+            case true:
+                switch (Agent.TargetProfessor == Professor)
+                {
+                    case true:
+                        Result = BehaviorResult.SUCCESS;
+                        return Result;
+                    default:
+                        Result = BehaviorResult.FAIL;
+                        return Result;
+                }
+            default:
+                Result = BehaviorResult.RUNNING;
+                return Result;
+        }
     }
 }

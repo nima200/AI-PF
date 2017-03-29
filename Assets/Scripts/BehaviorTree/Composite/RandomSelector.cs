@@ -1,48 +1,55 @@
-﻿using Random = UnityEngine.Random;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Random = UnityEngine.Random;
 
 public class RandomSelector : CompositeNode
 {
     private BehaviorNode _previousRandom;
-    /// <summary>
-    /// Randomly selects a child among the children nodes and proccesses it.
-    /// Makes sure the selected child is not the same as the previous child.
-    /// On Process() does not get a new random child unless the previous random child
-    /// is done (either fail or success).
-    /// </summary>
-    /// <returns>The result of the random child chosen.</returns>
+    private BehaviorNode _currentRandom;
+    private readonly CappedQueue<Professor> _memory = new CappedQueue<Professor>(4);
     public override BehaviorResult Process()
     {
-        if (_previousRandom == null || _previousRandom.Process() == BehaviorResult.FAIL || _previousRandom.Process() == BehaviorResult.SUCCESS) 
+        switch (_currentRandom.Process())
         {
-            var randomChild = GetRandomChild();
-            switch (randomChild.Process())
-            {
-                case BehaviorResult.FAIL:
-                    Result = BehaviorResult.FAIL;
-                    return Result;
-                case BehaviorResult.SUCCESS:
-                    Print("Random selector succeeded");
-                    Result = BehaviorResult.SUCCESS;
-                    return Result;
-                case BehaviorResult.RUNNING:
-                    Result = BehaviorResult.RUNNING;
-                    return Result;
-                default:
-                    Result = BehaviorResult.FAIL;
-                    return Result;
-            }
+            case BehaviorResult.FAIL:
+                _memory.Enqueue(_currentRandom.Professor);
+                Agent.Memory = _memory.Q.ToList();
+                Result = BehaviorResult.FAIL;
+                Print("RANDOM CHILD FAILED");
+                return Result;
+            case BehaviorResult.SUCCESS:
+                _memory.Enqueue(_currentRandom.Professor);
+                Agent.Memory = _memory.Q.ToList();
+                Result = BehaviorResult.SUCCESS;
+                Print("RANDOM CHILD SUCCESS");
+                break;
+            case BehaviorResult.RUNNING:
+                Result = BehaviorResult.RUNNING;
+                return Result;
         }
-        // if random wasn't null, and wasn't done, then it was running.
         Result = BehaviorResult.RUNNING;
         return Result;
     }
+
+    public override void Initialize()
+    {
+        ChildrenNodes[Random.Range(0, ChildrenNodes.Count)].Initialize();
+        _currentRandom = GetRandomChild();
+    }
+
+    public override void Reset()
+    {
+        base.Reset();
+        _previousRandom = _currentRandom;
+    }
+
     private BehaviorNode GetRandomChild()
     {
         while (true)
         {
             int randomChildIndex = Random.Range(0, ChildrenNodes.Count);
-            if (ChildrenNodes[randomChildIndex] == _previousRandom) continue;
-            _previousRandom = ChildrenNodes[randomChildIndex];
+            if (ChildrenNodes[randomChildIndex] == _previousRandom || _memory.Contains(ChildrenNodes[randomChildIndex].Professor)) continue;
             return ChildrenNodes[randomChildIndex];
         }
     }

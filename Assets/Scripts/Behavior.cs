@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Behavior : MonoBehaviour
@@ -105,16 +106,27 @@ public class Behavior : MonoBehaviour
 
 	private void Update ()
 	{
-	    if (_myresult != BehaviorResult.SUCCESS)
+	    _myresult = _myTree.ExecuteTree();
+	    switch (_myresult)
 	    {
-	        _myresult = _myTree.ExecuteTree();
+	        case BehaviorResult.FAIL:
+	        case BehaviorResult.SUCCESS:
+                _myTree.ResetTree();
+                _myTree.InitializeTree();
+	            break;
+	        case BehaviorResult.RUNNING:
+	            break;
 	    }
-	    else
-	    {
-            _myresult = BehaviorResult.RUNNING;
-	        _myTree.ResetTree();
-            _myTree.InitializeTree();
-	    }
+//	    if (_myresult != BehaviorResult.SUCCESS)
+//	    {
+//	        _myresult = _myTree.ExecuteTree();
+//	    }
+//	    else
+//	    {
+//            _myresult = BehaviorResult.RUNNING;
+//	        _myTree.ResetTree();
+//            _myTree.InitializeTree();
+//	    }
 
 	}
 }

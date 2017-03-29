@@ -7,13 +7,16 @@ public class Agent : MonoBehaviour
     [HideInInspector]
     public Vector3[] Path;
     public Transform Target;
+    public Professor TargetProfessor;
+    public Professor PreviousProfessor;
     [Range(1, 50)]
     public float Speed = 5;
-    private int _waypointIndex;
+    public int WaypointIndex;
     private Grid _grid;
-    
     public List<Plaque> Plaques;
+    public List<Professor> Memory = new List<Professor>();
     public List<Professor> Professors { get; set; }
+    public bool ReachedTarget;
 
     private void Awake()
     {
@@ -23,6 +26,7 @@ public class Agent : MonoBehaviour
         {
             Professors.Add(p.Professor);
         }
+        TargetProfessor = Professors[Random.Range(0, Professors.Count)];
     }
 
 	private void Update () {
@@ -39,7 +43,8 @@ public class Agent : MonoBehaviour
 
     private void ResetPath()
     {
-        _waypointIndex = 0;
+        ReachedTarget = false;
+        WaypointIndex = 0;
     }
     /// <summary>
     /// Method that moves the target towards its target. It is called automatically 
@@ -72,7 +77,7 @@ public class Agent : MonoBehaviour
             var currentWaypoint = Path[0];
             while (true)
             {
-                if (Path.Length > _grid.TimeStepWindow && _waypointIndex == _grid.TimeStepWindow)
+                if (Path.Length > _grid.TimeStepWindow && WaypointIndex == _grid.TimeStepWindow)
                 {
                     _grid.ResetGridReservations(this);
                     ResetPath();
@@ -81,13 +86,14 @@ public class Agent : MonoBehaviour
                 }
                 if (transform.position == currentWaypoint)
                 {
-                    _waypointIndex++;
+                    WaypointIndex++;
                     // target has reached target
-                    if (_waypointIndex >= Path.Length)
+                    if (WaypointIndex >= Path.Length)
                     {
+                        ReachedTarget = true;
                         yield break;
                     }
-                    currentWaypoint = Path[_waypointIndex];
+                    currentWaypoint = Path[WaypointIndex];
                 }
 //                transform.position = currentWaypoint;
                 transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
@@ -96,10 +102,28 @@ public class Agent : MonoBehaviour
         }
     }
 
+    public void RequestPath(Transform target)
+    {
+        Target = target;
+        StopPath();
+        ResetPath();
+        PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
+    }
+
+    public void GetRandomProf()
+    {
+        PreviousProfessor = TargetProfessor;
+        do
+        {
+            int random = Random.Range(0, Professors.Count);
+            TargetProfessor = Professors[random];
+        } while (TargetProfessor == PreviousProfessor);
+    }
+
     public void OnDrawGizmos()
     {
         if (Path == null) return;
-        for (int i = _waypointIndex; i < Path.Length; i++)
+        for (int i = WaypointIndex; i < Path.Length; i++)
         {
             Gizmos.color = Color.black;
             Gizmos.DrawCube(Path[i], Vector3.one * 2);
