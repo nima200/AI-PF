@@ -17,12 +17,13 @@ public class RandomProfSelector : RandomSelector
     /// </summary>
     public override void Initialize()
     {
-        base.Initialize();
+        
         for (int i = 0; i < Professors.Count; i++)
         {
             ChildrenNodes[i].SetProf(Professors[i]);
             ChildrenNodes[i].SetPlaque(Plaques[i]);
             ChildrenNodes[i].SetAgent(Agent);
         }
+        base.Initialize();
     }
 }

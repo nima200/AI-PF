@@ -1,6 +1,6 @@
 ﻿public enum BehaviorResult
 {
+    RUNNING,
     FAIL,
-    SUCCESS,
-    RUNNING
+    SUCCESS
 }

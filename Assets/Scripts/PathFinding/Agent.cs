@@ -23,6 +23,8 @@ public class Agent : MonoBehaviour
     [HideInInspector]
     public bool ReachedTarget;
 
+    
+
     private void Awake()
     {
         _grid = GameObject.Find("A*").GetComponent<Grid>();
@@ -32,6 +34,7 @@ public class Agent : MonoBehaviour
             Professors.Add(p.Professor);
         }
         TargetProfessor = Professors[Random.Range(0, Professors.Count)];
+        
     }
 
     private void ResetPath()

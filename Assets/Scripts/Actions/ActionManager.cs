@@ -5,6 +5,7 @@ public class ActionManager : MonoBehaviour
 {
 
     private static ActionManager _instance;
+    private Grid _grid;
 
     /// <summary>
     /// Method that makes an agent request a path-finding calculation from its current location to 
@@ -72,7 +73,7 @@ public class ActionManager : MonoBehaviour
     /// <param name="idle">The leaf node calling this method.</param>
     public void GoIdle(Idle idle)
     {
-        StartCoroutine(Idle(idle));
+        idle.Agent.RequestPath(_grid.IdleWaypoints[Random.Range(0, _grid.IdleWaypoints.Count)].transform);
     }
 
     public IEnumerator Idle(Idle idle)
@@ -89,6 +90,7 @@ public class ActionManager : MonoBehaviour
     {
         if (_instance == null)
         {
+            _grid = GameObject.Find("A*").GetComponent<Grid>();
             _instance = this;
         }
         else

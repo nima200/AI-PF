@@ -3,6 +3,7 @@ public class InteractionSequence : SequenceNode
     public override void Initialize()
     {
         Initialized = true;
+        ChildrenNodes[0].Initialize();
     }
 
     /// <summary>

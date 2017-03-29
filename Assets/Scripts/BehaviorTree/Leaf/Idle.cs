@@ -12,6 +12,7 @@ public class Idle : LeafNode
         {
             Print("Going into idle");
             ActionManager.GetInstance().GoIdle(this);
+            FinishedIdle = true;
         }
         else
         {
@@ -22,8 +23,24 @@ public class Idle : LeafNode
 
     public override BehaviorResult Process()
     {
-        Result = !FinishedIdle ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
-        return Result;
+        switch (FinishedIdle)
+        {
+            case true:
+                switch (Agent.ReachedTarget)
+                {
+                    case true:
+                        Result = BehaviorResult.SUCCESS;
+                        return Result;
+                    default:
+                        Result = BehaviorResult.RUNNING;
+                        return Result;
+                }
+            default:
+                Result = BehaviorResult.RUNNING;
+                return Result;
+        }
+//        Result = !FinishedIdle ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;
+//        return Result;
     }
 
     public override void Reset()

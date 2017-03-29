@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Grid : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Grid : MonoBehaviour
     public bool DrawGizmos;
     public int MaxSize { get { return _sizeX * _sizeY; } }
     public int TimeStepWindow;
+    public List<IdleWaypoint> IdleWaypoints = new List<IdleWaypoint>();
 
     private void Awake()
     {
@@ -21,6 +23,7 @@ public class Grid : MonoBehaviour
         _sizeX = Mathf.RoundToInt(GridWorldSize.x / _nodeDiameter);
         _sizeY = Mathf.RoundToInt(GridWorldSize.y / _nodeDiameter);
         CreateGrid();
+        IdleWaypoints = FindObjectsOfType<IdleWaypoint>().ToList();
     }
     /// <summary>
     /// Creates a 2D grid of cells. Evaluates whether a cell can be marked as walkable or not depending on whether
