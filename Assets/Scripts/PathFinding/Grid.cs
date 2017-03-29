@@ -61,11 +61,10 @@ public class Grid : MonoBehaviour
             for (int y = -1; y <= 1; y++)
             {
                 // pause neighbor
-//                if (x == 0 && y == 0)
-//                {
-////                    neighbors.Add(Cells[(time + 1) % 10, x, y]);
-//                    break;
-//                }
+                if (x == 0 && y == 0)
+                {
+                    continue;
+                }
                 int checkX = cell.X + x;
                 int checkY = cell.Y + y;
                 if (checkX >= 0 && checkX < _sizeX && checkY >= 0 && checkY < _sizeY)

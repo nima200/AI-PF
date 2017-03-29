@@ -6,6 +6,11 @@
     public override void Initialize()
     {
         Initialized = true;
+        if (Agent.Memory.Contains(Professor))
+        {
+            DoneReading = true;
+            return;
+        }
         ActionManager.GetInstance().Read(this);
     }
 

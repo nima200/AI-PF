@@ -22,7 +22,6 @@ public class ActionManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         advice.FinishedTalking = true;
         advice.Agent.GetRandomProf();
-        print("Got advice from: " + advice.Professor);
     }
 
     public void Read(ReadPlaque plaque)
@@ -34,7 +33,6 @@ public class ActionManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(1f);
         read.DoneReading = true;
-        print("Done reading " + read.Professor + "'s plaque");
     }
 
     public void FindProfessor(FindProf findProf)

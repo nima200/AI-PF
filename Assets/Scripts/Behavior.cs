@@ -7,8 +7,11 @@ public class Behavior : MonoBehaviour
     public ActionManager ActionManagerPrefab;
     private BehaviorResult _myresult = BehaviorResult.FAIL;
     private BehaviorTree _myTree;
+    [HideInInspector]
     public List<Professor> Professors;
+    [HideInInspector]
     public List<Plaque> Plaques;
+    [HideInInspector]
     public Agent Agent;
 	private void Start ()
 	{

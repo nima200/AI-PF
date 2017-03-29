@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Agent : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class Agent : MonoBehaviour
     public Transform Target;
     public Professor TargetProfessor;
     public Professor PreviousProfessor;
+    public Vector3 CurrentWaypoint;
     [Range(1, 50)]
     public float Speed = 5;
     public int WaypointIndex;
@@ -16,7 +19,9 @@ public class Agent : MonoBehaviour
     public List<Plaque> Plaques;
     public List<Professor> Memory = new List<Professor>();
     public List<Professor> Professors { get; set; }
+    [HideInInspector]
     public bool ReachedTarget;
+    public List<Agent> OtherStudents = new List<Agent>();
 
     private void Awake()
     {
@@ -27,6 +32,12 @@ public class Agent : MonoBehaviour
             Professors.Add(p.Professor);
         }
         TargetProfessor = Professors[Random.Range(0, Professors.Count)];
+    }
+
+    private void Start()
+    {
+        OtherStudents = GameObject.FindObjectsOfType<Agent>().ToList();
+        OtherStudents.Remove(this);
     }
 
 	private void Update () {
@@ -74,7 +85,7 @@ public class Agent : MonoBehaviour
     {
         if (Path.Length > 0)
         {
-            var currentWaypoint = Path[0];
+            CurrentWaypoint = Path[0];
             while (true)
             {
                 if (Path.Length > _grid.TimeStepWindow && WaypointIndex == _grid.TimeStepWindow)
@@ -84,19 +95,20 @@ public class Agent : MonoBehaviour
                     PathRequestManager.RequestPath(transform.position, Target.position, OnPathFound, this);
                     yield break;
                 }
-                if (transform.position == currentWaypoint)
+                if (transform.position == CurrentWaypoint)
                 {
                     WaypointIndex++;
-                    // target has reached target
+                    // agent has reached target
                     if (WaypointIndex >= Path.Length)
                     {
                         ReachedTarget = true;
                         yield break;
                     }
-                    currentWaypoint = Path[WaypointIndex];
+                    CurrentWaypoint = Path[WaypointIndex];
                 }
-//                transform.position = currentWaypoint;
-                transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
+                    
+                //                transform.position = currentWaypoint;
+                transform.position = Vector3.MoveTowards(transform.position, CurrentWaypoint, Speed * Time.deltaTime);
                 yield return null;
             }
         }

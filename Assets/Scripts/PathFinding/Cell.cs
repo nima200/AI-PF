@@ -2,18 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Pair<TA, TB>
-{
-    public TA AValue { get; set; }
-    public TB BValue { get; set; }
-
-    public Pair(TA aValue, TB bValue)
-    {
-        AValue = aValue;
-        BValue = bValue;
-    }
-}
-
 
 public class Cell
 {
@@ -64,6 +52,11 @@ public class Cell
         {
             node.GCost = gCost;
         }
+    }
+
+    public int GetGCost()
+    {
+        return GenericNode.GCost;
     }
 
     public void SetHCost(int hCost)

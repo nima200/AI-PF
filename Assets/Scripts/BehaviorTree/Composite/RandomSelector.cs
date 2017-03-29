@@ -16,13 +16,11 @@ public class RandomSelector : CompositeNode
                 _memory.Enqueue(_currentRandom.Professor);
                 Agent.Memory = _memory.Q.ToList();
                 Result = BehaviorResult.FAIL;
-                Print("RANDOM CHILD FAILED");
                 return Result;
             case BehaviorResult.SUCCESS:
                 _memory.Enqueue(_currentRandom.Professor);
                 Agent.Memory = _memory.Q.ToList();
                 Result = BehaviorResult.SUCCESS;
-                Print("RANDOM CHILD SUCCESS");
                 break;
             case BehaviorResult.RUNNING:
                 Result = BehaviorResult.RUNNING;
@@ -49,7 +47,10 @@ public class RandomSelector : CompositeNode
         while (true)
         {
             int randomChildIndex = Random.Range(0, ChildrenNodes.Count);
-            if (ChildrenNodes[randomChildIndex] == _previousRandom || _memory.Contains(ChildrenNodes[randomChildIndex].Professor)) continue;
+            if (Agent.Memory.Contains(Agent.TargetProfessor))
+                return ChildrenNodes.First(node => node.Professor == Agent.TargetProfessor);
+            if (ChildrenNodes[randomChildIndex] == _previousRandom ||
+                _memory.Contains(ChildrenNodes[randomChildIndex].Professor)) continue;
             return ChildrenNodes[randomChildIndex];
         }
     }

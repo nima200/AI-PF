@@ -8,7 +8,6 @@ public class AStar : MonoBehaviour
 {
     private PathRequestManager _requestManager;
     private Grid _grid;
-//    private Dictionary<string, Agent> _reservationTable = new Dictionary<string, Agent>();
 
     private void Awake()
     {
@@ -28,8 +27,6 @@ public class AStar : MonoBehaviour
 
 
         // The sets
-        if (startCell.GenericNode.Walkable)
-        {
             var openSet = new List<Cell>();
             var closedSet = new HashSet<Cell>();
 
@@ -55,6 +52,7 @@ public class AStar : MonoBehaviour
                 currentCell.Reserve(agent, time);
                 currentCell.Reserve(agent, time + 1);
 
+
                 // If this succeeds, it means path is found.
                 if (currentCell.X == targetCell.X && currentCell.Y == targetCell.Y)
                 {
@@ -65,7 +63,7 @@ public class AStar : MonoBehaviour
 
                 foreach (var neighbor in _grid.GetNeighbors(currentCell))
                 {
-                    if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1)) continue;
+                    if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1) || neighbor.IsReserved(time)) continue;
 
                     int newMovementCostToNeighbor = currentCell.GenericNode.GCost + GetDistance(currentCell, neighbor);
                     if (newMovementCostToNeighbor < neighbor.GenericNode.GCost || !openSet.Contains(neighbor))
@@ -81,11 +79,11 @@ public class AStar : MonoBehaviour
                 }
                 time++;
             }
-        }
-        else
-        {
-            print("Path finding is not possible as either the start or end node are not walkable.");
-        }
+//        }
+//        else
+//        {
+//            print("Path finding is not possible as either the start or end node are not walkable.");
+//        }
         yield return null;
         if (foundPath)
         {
@@ -111,22 +109,6 @@ public class AStar : MonoBehaviour
         return waypoints;
     }
 
-    private Vector3[] SimplifyPath(IList<Node> path)
-    {
-        var waypoints = new List<Vector3>();
-        var directionOld = Vector2.zero;
-        for (int i = 1; i < path.Count; i++)
-        {
-            var directionNew = new Vector2(path[i-1].X - path[i].X, path[i-1].Y - path[i].Y);
-            if (directionNew != directionOld)
-            {
-                waypoints.Add(path[i].WorldPosition);
-            }
-            directionOld = directionNew;
-        }
-        return waypoints.ToArray();
-    }
-
     private static Vector3[] NodesToVector3S(IEnumerable<Node> path)
     {
         return path.Select(node => node.WorldPosition).ToArray();
@@ -136,16 +118,11 @@ public class AStar : MonoBehaviour
     {
         int distanceX = Mathf.Abs(a.X - b.X);
         int distanceY = Mathf.Abs(a.Y - b.Y);
-
         if (distanceX > distanceY)
         {
             return 14 * distanceY + 10 * (distanceX - distanceY);
         }
-        if (distanceX == 0 && distanceY == 0)
-        {
-            return 14;
-        }
-        return 14 * distanceX + 10 * (distanceY * distanceX);
+        return 14 * distanceX + 10 * (distanceY - distanceX);
     }
 
     public void StartFindPath(Vector3 startPosition, Vector3 targetPosition, Agent agent)
