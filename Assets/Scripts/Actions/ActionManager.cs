@@ -66,6 +66,7 @@ public class ActionManager : MonoBehaviour
         findProf.Agent.RequestPath(findProf.Plaque.transform);
     }
 
+
     /// <summary>
     /// Method that attempts to send a path-finding request for the agent from its current
     /// location to a random location through the level's main area.
@@ -74,13 +75,6 @@ public class ActionManager : MonoBehaviour
     public void GoIdle(Idle idle)
     {
         idle.Agent.RequestPath(_grid.IdleWaypoints[Random.Range(0, _grid.IdleWaypoints.Count)].transform);
-    }
-
-    public IEnumerator Idle(Idle idle)
-    {
-        yield return new WaitForSecondsRealtime(5f);
-        idle.FinishedIdle = true;
-        print("Done with idle");
     }
 
     /// <summary>

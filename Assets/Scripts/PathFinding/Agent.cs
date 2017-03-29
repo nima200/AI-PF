@@ -20,7 +20,6 @@ public class Agent : MonoBehaviour
     public List<Plaque> Plaques;
     public List<Professor> Memory = new List<Professor>();
     public List<Professor> Professors { get; set; }
-    [HideInInspector]
     public bool ReachedTarget;
 
     

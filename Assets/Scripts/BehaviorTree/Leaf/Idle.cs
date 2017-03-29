@@ -10,13 +10,11 @@ public class Idle : LeafNode
         int random = Random.Range(0, 10);
         if (random < 5)
         {
-            Print("Going into idle");
             ActionManager.GetInstance().GoIdle(this);
             FinishedIdle = true;
         }
         else
         {
-            Print("Skipped idle");
             FinishedIdle = true;
         }
     }
@@ -36,7 +34,7 @@ public class Idle : LeafNode
                         return Result;
                 }
             default:
-                Result = BehaviorResult.RUNNING;
+                Result = BehaviorResult.SUCCESS;
                 return Result;
         }
 //        Result = !FinishedIdle ? BehaviorResult.RUNNING : BehaviorResult.SUCCESS;

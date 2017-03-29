@@ -30,7 +30,7 @@ public class RandomSelector : CompositeNode
                 _memory.Enqueue(_currentRandom.Professor);
                 Agent.Memory = _memory.Q.ToList();
                 Result = BehaviorResult.SUCCESS;
-                break;
+                return Result;
             case BehaviorResult.RUNNING:
                 Result = BehaviorResult.RUNNING;
                 return Result;
