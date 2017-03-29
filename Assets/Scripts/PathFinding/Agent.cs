@@ -10,9 +10,10 @@ public class Agent : MonoBehaviour
     public Vector3[] Path;
     public Transform Target;
     public Professor TargetProfessor;
+    [HideInInspector]
     public Professor PreviousProfessor;
     public Vector3 CurrentWaypoint;
-    [Range(1, 50)]
+    [Range(1, 30)]
     public float Speed = 5;
     public int WaypointIndex;
     private Grid _grid;
@@ -36,7 +37,7 @@ public class Agent : MonoBehaviour
 
     private void Start()
     {
-        OtherStudents = GameObject.FindObjectsOfType<Agent>().ToList();
+        OtherStudents = FindObjectsOfType<Agent>().ToList();
         OtherStudents.Remove(this);
     }
 
@@ -79,6 +80,9 @@ public class Agent : MonoBehaviour
     /// Moves the agent towards the waypoint it's supposed to be processing in the path.
     /// The waypoint starts from 0, and goes on proceeding through the path until the waypointindex
     /// has reached the length of the path, meaning the agent has reached the last waypoint in the path.
+    /// Attempts to stop the path and recalculate another A* once the waypoint index has reached the 
+    /// cap of the reservation window. In this way, we can limit our reservation window to whatever we want without
+    /// worrying about the depth of the tree cause it will get replaced once the request to re-pathfind is sent.
     /// </summary>
     /// <returns></returns>
     private IEnumerator FollowPath()
@@ -106,8 +110,6 @@ public class Agent : MonoBehaviour
                     }
                     CurrentWaypoint = Path[WaypointIndex];
                 }
-                    
-                //                transform.position = currentWaypoint;
                 transform.position = Vector3.MoveTowards(transform.position, CurrentWaypoint, Speed * Time.deltaTime);
                 yield return null;
             }
