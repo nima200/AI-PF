@@ -12,6 +12,9 @@ public class RandomProfSelector : RandomSelector
         Agent = agent;
     }
 
+    /// <summary>
+    /// Sets the professor, plaque, and agent of all children node.
+    /// </summary>
     public override void Initialize()
     {
         base.Initialize();

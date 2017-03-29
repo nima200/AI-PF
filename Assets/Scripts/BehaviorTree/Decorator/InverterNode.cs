@@ -1,23 +1,22 @@
 ﻿public class InverterNode : DecoratorNode
 {
     public InverterNode(BehaviorNode childNode) : base(childNode) { }
-
+    /// <summary>
+    /// Basic inverting process method that returns success on fail and fail on success.
+    /// </summary>
+    /// <returns>The rest of inversion.</returns>
     public override BehaviorResult Process()
     {
-        // ReSharper disable once SwitchStatementMissingSomeCases
         // Default behavior comes from child's default
         switch (ChildNode.Process())
         {
             case BehaviorResult.FAIL:
-                Print("Child failed. SUCCESS.");
                 Result = BehaviorResult.SUCCESS;
                 return Result;
             case BehaviorResult.SUCCESS:
-                Print("Child succeeded. FAIL.");
                 Result = BehaviorResult.FAIL;
                 return Result;
             case BehaviorResult.RUNNING:
-                Print("Child running. RUNNING.");
                 Result = BehaviorResult.RUNNING;
                 return Result;
         }
