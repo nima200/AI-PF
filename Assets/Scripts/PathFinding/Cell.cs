@@ -72,9 +72,9 @@ public class Cell
     /// </summary>
     /// <param name="timeStep"></param>
     /// <returns></returns>
-    public bool IsReserved(int timeStep)
+    public bool IsReserved(int timeStep, Agent agent)
     {
-        return timeStep <= ReservationTable.Length - 1 && ReservationTable[timeStep] != null;
+        return timeStep <= ReservationTable.Length - 1 && ReservationTable[timeStep] != null && ReservationTable[timeStep] != agent;
     }
     /// <summary>
     /// Basic setter for the GCost.

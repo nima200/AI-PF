@@ -26,20 +26,23 @@ public class AStar : MonoBehaviour
         var targetCell = _grid.CellFromWorldPoint(target);
 
 
-            // The sets
-            var openSet = new List<Cell>();
-            var closedSet = new HashSet<Cell>();
+        // The sets
+        var openSet = new List<Cell>();
+        var closedSet = new HashSet<Cell>();
 
-            openSet.Add(startCell);
-            int time = 0;
-            while (openSet.Count > 0)
+        openSet.Add(startCell);
+        int time = 0;
+        while (openSet.Count > 0)
+        {
+
+            if (!targetCell.IsReserved(time, agent))
             {
-
                 // currentnode = node with lowest FCost. This is added to the path.
                 var currentCell = openSet[0];
                 for (int i = 1; i < openSet.Count; i++)
                 {
-                    if (openSet[i].GenericNode.FCost < currentCell.GenericNode.FCost || openSet[i].GenericNode.FCost == currentCell.GenericNode.FCost)
+                    if (openSet[i].GenericNode.FCost < currentCell.GenericNode.FCost ||
+                        openSet[i].GenericNode.FCost == currentCell.GenericNode.FCost)
                     {
                         if (openSet[i].GenericNode.HCost < currentCell.GenericNode.HCost)
                             currentCell = openSet[i];
@@ -64,7 +67,8 @@ public class AStar : MonoBehaviour
                 // Check all neighbors and get the one with the lowest FCost to be the next node to include in the path.
                 foreach (var neighbor in _grid.GetNeighbors(currentCell))
                 {
-                    if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1) || neighbor.IsReserved(time)) continue;
+                    if (!neighbor.GenericNode.Walkable || closedSet.Contains(neighbor) || neighbor.IsReserved(time + 1, agent) ||
+                        neighbor.IsReserved(time, agent)) continue;
 
                     int newMovementCostToNeighbor = currentCell.GenericNode.GCost + GetDistance(currentCell, neighbor);
                     if (newMovementCostToNeighbor < neighbor.GenericNode.GCost || !openSet.Contains(neighbor))
@@ -84,6 +88,12 @@ public class AStar : MonoBehaviour
                 }
                 time++;
             }
+            else
+            {
+                agent.RequestPath(agent.Target);
+                break;
+            }
+        }
         yield return null;
         if (foundPath)
         {

@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+using System.Diagnostics;
 
 public class Agent : MonoBehaviour
 {
@@ -19,10 +18,11 @@ public class Agent : MonoBehaviour
     private Grid _grid;
     public List<Plaque> Plaques;
     public List<Professor> Memory = new List<Professor>();
-    public List<Professor> Professors { get; set; }
+    public List<Professor> Professors;
     public bool ReachedTarget;
-
-    
+    public float DistanceToTarget;
+    public int PreviousDistance;
+    public Stopwatch Timer = new Stopwatch();
 
     private void Awake()
     {
@@ -33,11 +33,11 @@ public class Agent : MonoBehaviour
             Professors.Add(p.Professor);
         }
         TargetProfessor = Professors[Random.Range(0, Professors.Count)];
-        
     }
 
     private void ResetPath()
     {
+        _grid.ResetGridReservations(this);
         ReachedTarget = false;
         WaypointIndex = 0;
     }
@@ -49,7 +49,11 @@ public class Agent : MonoBehaviour
     /// <param name="pathFound">The result of calculating a path</param>
     public void OnPathFound(Vector3[] newPath, bool pathFound)
     {
-        if (!pathFound) return;
+        if (!pathFound)
+        {
+            ResetPath();
+            return;
+        }
         Path = newPath;
         StopCoroutine("FollowPath");
         StartCoroutine("FollowPath");
@@ -73,8 +77,31 @@ public class Agent : MonoBehaviour
         if (Path.Length > 0)
         {
             CurrentWaypoint = Path[0];
+            if (Timer.IsRunning && Vector3.Distance(CurrentWaypoint, Target.position) < DistanceToTarget)
+            {
+                Timer.Stop();
+                if (Timer.ElapsedMilliseconds > 100 && Timer.ElapsedMilliseconds < 3000)
+                {
+                    GetComponentInChildren<Renderer>().material.color = Color.red;
+                }
+                else if (Timer.ElapsedMilliseconds > 3000)
+                {
+                    GetComponentInChildren<Renderer>().material.color = Color.black;
+                }
+            }
+            else
+            {
+                Timer.Reset();
+                GetComponentInChildren<Renderer>().material.color = Color.green;
+            }
+            if (Vector3.Distance(CurrentWaypoint, Target.position) < DistanceToTarget)
+            {
+                if (!Timer.IsRunning)
+                    Timer.Start();
+            }
             while (true)
             {
+                // Recalculate A* at end of reservation window
                 if (Path.Length > _grid.TimeStepWindow && WaypointIndex == _grid.TimeStepWindow)
                 {
                     _grid.ResetGridReservations(this);
@@ -94,6 +121,7 @@ public class Agent : MonoBehaviour
                     CurrentWaypoint = Path[WaypointIndex];
                 }
                 transform.position = Vector3.MoveTowards(transform.position, CurrentWaypoint, Speed * Time.deltaTime);
+                DistanceToTarget = Vector3.Distance(transform.position, Target.position);
                 yield return null;
             }
         }
